@@ -38,5 +38,10 @@ const cols = 10;
 const xOffset = 50;
 const yOffset = 50;
 
-// Draw the honeycomb pattern
 drawHoneycomb(rows, cols, hexSize, xOffset, yOffset);
+
+function drawBee(x, y, size) {
+  ctx.fillRect(x - size/2, y - size/2, size, size);
+}
+
+drawBee(50, 50, 10);
