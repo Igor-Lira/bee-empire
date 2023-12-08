@@ -5,14 +5,23 @@ cv.height = window.innerHeight;
 
 function drawHexagon(x, y, size) {
   ctx.beginPath();
+  ctx.fillStyle = '#F9F171';
+  ctx.lineWidth = 5;
   ctx.moveTo(x, y + size*Math.sqrt(3));
   ctx.lineTo(x + 1.5*size, y + Math.sqrt(3)*size/2);
   ctx.lineTo(x + 1.5*size, y - Math.sqrt(3)*size/2);
   ctx.lineTo(x, y - size*Math.sqrt(3));
   ctx.lineTo(x - 1.5*size, y - Math.sqrt(3)*size/2);
   ctx.lineTo(x - 1.5*size, y + Math.sqrt(3)*size/2);
+  ctx.fill();
   ctx.closePath();
   ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(x, y, size, size,  Math.PI / 180, 0, 2 * Math.PI);
+  ctx.fillStyle = '#E6CC47'
+  ctx.stroke();
+  ctx.fill();
+  ctx.closePath();
 }
 
 function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset) {
@@ -30,7 +39,7 @@ function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset) {
   }
 }
 
-const hexSize = 30;
+const hexSize = 100;
 const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
 const rows = 10;
