@@ -1,13 +1,8 @@
 let isDragging = false;
 let startMouseX, startMouseY;
-let selectionBox = document.getElementById('selection-box');
-
-function isPointInsideSelectionBox(x, y, boxX, boxY, boxWidth, boxHeight) {
-  return x >= boxX && x <= boxX + boxWidth && y >= boxY && y <= boxY + boxHeight;
-}
 
 document.addEventListener('mousedown', (event) => {
-  if (event.button !== 0) return; // Check for left mouse button (button 0)
+  if (event.button !== 0) return;
   isDragging = true;
   startMouseX = event.clientX;
   startMouseY = event.clientY;
@@ -18,40 +13,45 @@ document.addEventListener('mousedown', (event) => {
   selectionBox.style.height = '0px';
 });
 
-document.addEventListener('mousemove', (event) => {
+document.addEventListener('mousemove', (e) => {
+  isMouseover = true;
+  cursor.x = e.clientX;
+  cursor.y = e.clientY;
   if (!isDragging) return;
-  let currentMouseX = event.clientX;
-  let currentMouseY = event.clientY;
-
-  let boxWidth = currentMouseX - startMouseX;
-  let boxHeight = currentMouseY - startMouseY;
-
+  let boxWidth = cursor.x - startMouseX;
+  let boxHeight = cursor.y - startMouseY;
   selectionBox.style.width = Math.abs(boxWidth) + 'px';
   selectionBox.style.height = Math.abs(boxHeight) + 'px';
-
   if (boxWidth < 0) {
-    selectionBox.style.left = currentMouseX + 'px';
+    selectionBox.style.left = cursor.x  + 'px';
   }
 
   if (boxHeight < 0) {
-    selectionBox.style.top = currentMouseY + 'px';
+    selectionBox.style.top = cursor.y + 'px';
   }
 
-  const element = document.getElementById('selection-box');
-
-  const top = element.offsetTop;
-  const left = element.offsetLeft;
-
-  const isInside = isPointInsideSelectionBox(global.player.bee.x, global.player.bee.y,top, left,boxWidth, boxHeight);
+  const isInside = isPointInsideSelectionBox(
+    objects[0].x,
+    objects[0].y,
+    selectionBox.offsetLeft,
+    selectionBox.offsetTop,
+    Math.abs(boxWidth),
+    Math.abs(boxHeight),
+  );
   if (isInside) {
-    console.log('called');
-    window.requestAnimationFrame(() => drawBee(global.player.bee.x, global.player.bee.y, 20, true));
+    objects[0].selected = true;
+    objects[0].focused = true;
   }
-
 });
 
 document.addEventListener('mouseup', () => {
   isDragging = false;
+  isMouseover = false;
+  if (objects[0].focused) {
+    objects[0].focused = false;
+  } else {
+    objects[0].selected = false;
+  }
   selectionBox.style.display = 'none';
 });
 
@@ -62,7 +62,15 @@ function handleRightClick(event) {
   myDiv.classList.add('right-click-animation');
   myDiv.style.left = event.pageX - 20 + 'px';
   myDiv.style.top = event.pageY - 20 + 'px';
-  move(global.player.bee.x, global.player.bee.y, event.pageX, event.pageY);
+
+  if (objects[0].selected) {
+    objects[0].focused = true;
+    if(objects[0].movement) {
+      clearInterval(objects[0].movement);
+    }
+    move(event.pageX, event.pageY);
+  }
+
   const right = document.getElementById("right-click");
   right.appendChild(myDiv);
   setTimeout(() => {
@@ -71,28 +79,29 @@ function handleRightClick(event) {
 }
 
 
-function move(beeX, beeY, mouseX, mouseY) {
-  const targetX = mouseX - beeX;
-  const targetY = mouseY - beeY;
+function move(mouseX, mouseY) {
+  const targetX = mouseX - objects[0].x;
+  const targetY = mouseY - objects[0].y;
   const deg = Math.atan2(targetY, targetX);
   const dist = Math.hypot(targetX, targetY);
-  const deltaX = 10 * Math.cos(deg);
-  const deltaY = 10 * Math.sin(deg);
-  let newX = beeX;
-  let newY = beeY;
+  const deltaX = 0.8 * Math.cos(deg);
+  const deltaY = 0.8 * Math.sin(deg);
   if (!isNaN(deltaX)) {
-    newX += deltaX;
+    objects[0].x += deltaX;
   }
   if (!isNaN(deltaY)) {
-    newY += deltaY;
+    objects[0].y += deltaY;
   }
-  drawBee(newX, newY, 20);
-  console.log(dist);
-  if (dist > 5) {
-    setTimeout(() => {
-      move(newX, newY, mouseX, mouseY);
-    }, 200)
+  if (dist > 1) {
+    objects[0].movement = setTimeout(() => {
+      move(mouseX, mouseY);
+    }, 10)
   }
 }
 // Listen for the contextmenu event (right-click) on the div
 document.body.addEventListener('contextmenu', handleRightClick);
+document.body.addEventListener('click', () => {
+    // for(let i=0;i<objects.length;i=i+1) {
+    //   objects[i].selected = false;
+    // }
+})

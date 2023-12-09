@@ -1,7 +1,48 @@
-const cv = document.getElementById('canvas');
-const ctx = cv.getContext('2d');
-cv.width = window.innerWidth;
-cv.height = window.innerHeight;
+function handleAddBee (rect) {
+  if(!rect) {
+    rect = {
+      x : randMinMax(0, map.bounds.width-32),
+      y : randMinMax(0, map.bounds.height-32),
+      width : 20,
+      height : 20,
+      check : false
+    };
+  }
+  objects.push(rect);
+  map.insert(rect);
+}
+
+function handleClear() {
+  objects = [];
+  map.clear();
+}
+
+function drawQuadtree (node) {
+  const bounds = node.bounds;
+  if(node.nodes.length === 0) {
+    ctx.strokeStyle = 'rgba(255,0,0,0.5)';
+    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+  } else {
+    for(let i=0;i<node.nodes.length;i=i+1) {
+      drawQuadtree(node.nodes[i]);
+    }
+  }
+};
+
+function drawObjects() {
+  let obj;
+  for(let i=0;i<objects.length;i=i+1) {
+    obj = objects[i];
+    if (obj.selected) {
+      ctx.fillStyle = 'red';
+    } else {
+      ctx.fillStyle = 'blue';
+    }
+    ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+  }
+};
+
 
 function drawHexagon(x, y, size) {
   ctx.beginPath();
@@ -47,21 +88,39 @@ const cols = 10;
 const xOffset = 50;
 const yOffset = 50;
 
-drawHoneycomb(rows, cols, hexSize, xOffset, yOffset);
+//
+// function drawBee(x, y, size, isSelected = false) {
+//   ctx.fillStyle = isSelected ? 'red' : 'black';
+//   ctx.fillRect(x - size/2, y - size/2, size, size);
+// }
 
-function drawBee(x, y, size, isSelected = false) {
-  ctx.fillStyle = isSelected ? 'red' : 'black';
-  ctx.fillRect(x - size/2, y - size/2, size, size);
-}
+function loop() {
 
-const global = {};
+  let candidates = [];
+  ctx.clearRect(map.x,map.y, map.width, map.height);
 
-global.player = {};
+  // ctx.clearRect(0, 0, 640, 480);
 
-global.player.bee = {
-  x: 100,
-  y: 100,
-}
+  for(let i=0;i<objects.length;i=i+1) {
+    objects[i].check = false;
+  }
 
 
-drawBee(global.player.bee.x, global.player.bee.y, 20);
+  // if(isMouseover) {
+  //   ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  //   // ctx.fillRect(cursor.x, cursor.y, cursor.width, cursor.height);
+  //   candidates = map.retrieve(cursor);
+  //   for(let i=0; i<candidates.length;i=i+1) {
+  //     candidates[i].check = true;
+  //   }
+  // }
+
+  // drawQuadtree(map);
+  drawHoneycomb(rows, cols, hexSize, xOffset, yOffset);
+  drawObjects();
+  requestAnimFrame(loop);
+};
+
+loop();
+handleAddBee();
+
