@@ -49,8 +49,19 @@ const yOffset = 50;
 
 drawHoneycomb(rows, cols, hexSize, xOffset, yOffset);
 
-function drawBee(x, y, size) {
+function drawBee(x, y, size, isSelected = false) {
+  ctx.fillStyle = isSelected ? 'red' : 'black';
   ctx.fillRect(x - size/2, y - size/2, size, size);
 }
 
-drawBee(50, 50, 10);
+const global = {};
+
+global.player = {};
+
+global.player.bee = {
+  x: 100,
+  y: 100,
+}
+
+
+drawBee(global.player.bee.x, global.player.bee.y, 20);
