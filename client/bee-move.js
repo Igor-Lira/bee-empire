@@ -62,8 +62,7 @@ function handleRightClick(event) {
   myDiv.classList.add('right-click-animation');
   myDiv.style.left = event.pageX - 20 + 'px';
   myDiv.style.top = event.pageY - 20 + 'px';
-
-  console.log('my div', myDiv);
+  move(global.player.bee.x, global.player.bee.y, event.pageX, event.pageY);
   const right = document.getElementById("right-click");
   right.appendChild(myDiv);
   setTimeout(() => {
@@ -71,5 +70,29 @@ function handleRightClick(event) {
   }, 1000); // Change 1000 to the desired duration of the animation in milliseconds
 }
 
+
+function move(beeX, beeY, mouseX, mouseY) {
+  const targetX = mouseX - beeX;
+  const targetY = mouseY - beeY;
+  const deg = Math.atan2(targetY, targetX);
+  const dist = Math.hypot(targetX, targetY);
+  const deltaX = 10 * Math.cos(deg);
+  const deltaY = 10 * Math.sin(deg);
+  let newX = beeX;
+  let newY = beeY;
+  if (!isNaN(deltaX)) {
+    newX += deltaX;
+  }
+  if (!isNaN(deltaY)) {
+    newY += deltaY;
+  }
+  drawBee(newX, newY, 20);
+  console.log(dist);
+  if (dist > 5) {
+    setTimeout(() => {
+      move(newX, newY, mouseX, mouseY);
+    }, 200)
+  }
+}
 // Listen for the contextmenu event (right-click) on the div
 document.body.addEventListener('contextmenu', handleRightClick);
