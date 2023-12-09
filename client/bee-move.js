@@ -84,8 +84,32 @@ function move(mouseX, mouseY) {
   const targetY = mouseY - objects[0].y;
   const deg = Math.atan2(targetY, targetX);
   const dist = Math.hypot(targetX, targetY);
-  const deltaX = 0.8 * Math.cos(deg);
-  const deltaY = 0.8 * Math.sin(deg);
+  let deltaX = 0.8 * Math.cos(deg);
+  let deltaY = 0.8 * Math.sin(deg);
+
+  if (objects.length > 1) {
+    const intersect = getIntersection(objects[0], objects[1]);
+    if (intersect) {
+      // deltaX = intersection.pushX;
+      // deltaY = intersection.pushY;
+      if(intersect.pushX < intersect.pushY) {
+
+        if(intersect.dirX < 0) {
+          deltaX = - objects[1].width*0.2;
+        } else if(intersect.dirX > 0) {
+          deltaX = objects[1].width*0.2;
+        }
+      } else {
+
+        if(intersect.dirY < 0) {
+          deltaY = - objects[1].height*0.2;
+        } else if(intersect.dirY > 0) {
+          deltaY = + objects[1].height*0.2;
+        }
+      }
+    }
+  }
+
   if (!isNaN(deltaX)) {
     objects[0].x += deltaX;
   }

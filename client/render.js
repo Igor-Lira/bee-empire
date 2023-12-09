@@ -3,8 +3,8 @@ function handleAddBee (rect) {
     rect = {
       x : randMinMax(0, map.bounds.width-32),
       y : randMinMax(0, map.bounds.height-32),
-      width : 20,
-      height : 20,
+      width : 50,
+      height : 50,
       check : false
     };
   }
@@ -122,5 +122,6 @@ function loop() {
 };
 
 loop();
+handleAddBee();
 handleAddBee();
 
