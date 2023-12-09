@@ -8,8 +8,9 @@ const map = new Quadtree({
   x: 0,
   y: 0,
   width: window.innerWidth,
-  height: window.innerHeight
-}, 4);
+  height: window.innerHeight,
+  maxLevels: 4
+});
 
 const cursor = {
   x : 0,
@@ -19,6 +20,7 @@ const cursor = {
 };
 
 let objects = [];
+let walls = [];
 
 let isMouseover = false;
 

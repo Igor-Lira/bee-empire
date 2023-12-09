@@ -3,14 +3,15 @@ function handleAddBee (rect) {
     rect = {
       x : randMinMax(0, map.bounds.width-32),
       y : randMinMax(0, map.bounds.height-32),
-      width : 50,
-      height : 50,
+      width : 20,
+      height : 20,
       check : false
     };
   }
   objects.push(rect);
   map.insert(rect);
 }
+
 
 function handleClear() {
   objects = [];
@@ -44,16 +45,56 @@ function drawObjects() {
 };
 
 
-function drawHexagon(x, y, size) {
+function drawHexagon(x, y, size, row, col, add=false) {
   ctx.beginPath();
   ctx.fillStyle = '#F9F171';
   ctx.lineWidth = 5;
+
+  let line;
+
   ctx.moveTo(x, y + size*Math.sqrt(3));
   ctx.lineTo(x + 1.5*size, y + Math.sqrt(3)*size/2);
+  if (add) {
+    line = { x1: x, y1: y + size*Math.sqrt(3), x2: x + 1.5*size, y2: y + Math.sqrt(3)*size/2, i: -1, j: 1  }
+    walls.push(line);
+    // map.insert(line);
+  }
+
   ctx.lineTo(x + 1.5*size, y - Math.sqrt(3)*size/2);
+  if (add) {
+    line = { x1: x + 1.5*size, y1: y + Math.sqrt(3)*size/2, x2: x + 1.5*size, y2: y - Math.sqrt(3)*size/2, i: -1, j: 0  }
+    walls.push(line);
+    // map.insert(line);
+  }
+
   ctx.lineTo(x, y - size*Math.sqrt(3));
+  if (add) {
+    line = { x1: x + 1.5*size, y1: y - Math.sqrt(3)*size/2, x2: x, y2: y - size*Math.sqrt(3), i: -1, j: -1 }
+    walls.push(line);
+    // map.insert(line);
+  }
+
   ctx.lineTo(x - 1.5*size, y - Math.sqrt(3)*size/2);
+  if (add) {
+    line = { x1: x, y1: y - size*Math.sqrt(3), x2: x - 1.5*size, y2: y - Math.sqrt(3)*size/2, i: 1, j: -1 }
+    walls.push(line);
+    // map.insert(line);
+  }
+
   ctx.lineTo(x - 1.5*size, y + Math.sqrt(3)*size/2);
+
+  if (add) {
+    line = { x1: x - 1.5*size, y1: y - Math.sqrt(3)*size/2, x2: x - 1.5*size, y2: y + Math.sqrt(3)*size/2, i: 1, j: 0 }
+    walls.push(line);
+    // map.insert(line);
+  }
+
+  if (add) {
+    line = {  x1: x - 1.5*size, y1: y + Math.sqrt(3)*size/2, x2: x, y2: y + size*Math.sqrt(3), i: 1, j: 1}
+    walls.push(line);
+  }
+  // line = new Quadtree.Line({ x1: x - 1.5*size, y1: y - Math.sqrt(3)*size/2, x2: x - 1.5*size, y2: y + Math.sqrt(3)*size/2 })
+
   ctx.fill();
   ctx.closePath();
   ctx.stroke();
@@ -65,7 +106,7 @@ function drawHexagon(x, y, size) {
   ctx.closePath();
 }
 
-function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset) {
+function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset, add=false) {
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       let x;
@@ -75,7 +116,7 @@ function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset) {
         x = xOffset + hexWidth + col *2*hexWidth;
       }
       const y = yOffset + row * 1.5*hexHeight;
-      drawHexagon(x, y, hexSize);
+      drawHexagon(x, y, hexSize, row, col, add);
     }
   }
 }
@@ -83,8 +124,8 @@ function drawHoneycomb(rows, cols, hexSize, xOffset, yOffset) {
 const hexSize = 100;
 const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
-const rows = 10;
-const cols = 10;
+const rows = 5;
+const cols = 5;
 const xOffset = 50;
 const yOffset = 50;
 
@@ -99,28 +140,16 @@ function loop() {
   let candidates = [];
   ctx.clearRect(map.x,map.y, map.width, map.height);
 
-  // ctx.clearRect(0, 0, 640, 480);
-
   for(let i=0;i<objects.length;i=i+1) {
     objects[i].check = false;
   }
 
-
-  // if(isMouseover) {
-  //   ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  //   // ctx.fillRect(cursor.x, cursor.y, cursor.width, cursor.height);
-  //   candidates = map.retrieve(cursor);
-  //   for(let i=0; i<candidates.length;i=i+1) {
-  //     candidates[i].check = true;
-  //   }
-  // }
-
-  // drawQuadtree(map);
   drawHoneycomb(rows, cols, hexSize, xOffset, yOffset);
   drawObjects();
   requestAnimFrame(loop);
 };
 
+drawHoneycomb(rows, cols, hexSize, xOffset, yOffset, true);
 loop();
 handleAddBee();
 handleAddBee();

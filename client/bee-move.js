@@ -87,7 +87,18 @@ function move(mouseX, mouseY) {
   let deltaX = 0.8 * Math.cos(deg);
   let deltaY = 0.8 * Math.sin(deg);
 
-  if (objects.length > 1) {
+
+  let wallCollision = false;
+  for (let line of walls) {
+    if (lineIntersectsRect({x: line.x1, y: line.y1}, {x: line.x2, y: line.y2}, objects[0])) {
+      wallCollision = true;
+    }
+  }
+  if (wallCollision) {
+    deltaX = -10*deltaX;
+    deltaY = -10*deltaY;
+  }
+  if (!wallCollision && objects.length > 1) {
     const intersect = getIntersection(objects[0], objects[1]);
     if (intersect) {
       // deltaX = intersection.pushX;
@@ -122,10 +133,5 @@ function move(mouseX, mouseY) {
     }, 10)
   }
 }
-// Listen for the contextmenu event (right-click) on the div
+
 document.body.addEventListener('contextmenu', handleRightClick);
-document.body.addEventListener('click', () => {
-    // for(let i=0;i<objects.length;i=i+1) {
-    //   objects[i].selected = false;
-    // }
-})

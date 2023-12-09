@@ -31,3 +31,30 @@ function getIntersection(r1, r2) {
     return false;
   }
 }
+function lineIntersectsRect(p1, p2, r) {
+  function lineIntersectsLine(l1p1, l1p2, l2p1, l2p2) {
+    let q = (l1p1.y - l2p1.y) * (l2p2.x - l2p1.x) - (l1p1.x - l2p1.x) * (l2p2.y - l2p1.y);
+    let d = (l1p2.x - l1p1.x) * (l2p2.y - l2p1.y) - (l1p2.y - l1p1.y) * (l2p2.x - l2p1.x);
+
+    if (d === 0) {
+      return false;
+    }
+
+    let r = q / d;
+
+    q = (l1p1.y - l2p1.y) * (l1p2.x - l1p1.x) - (l1p1.x - l2p1.x) * (l1p2.y - l1p1.y);
+    let s = q / d;
+
+    if (r < 0 || r > 1 || s < 0 || s > 1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return lineIntersectsLine(p1, p2, { x: r.x, y: r.y }, { x: r.x + r.width, y: r.y }) ||
+    lineIntersectsLine(p1, p2, { x: r.x + r.width, y: r.y }, { x: r.x + r.width, y: r.y + r.height }) ||
+    lineIntersectsLine(p1, p2, { x: r.x + r.width, y: r.y + r.height }, { x: r.x, y: r.y + r.height }) ||
+    lineIntersectsLine(p1, p2, { x: r.x, y: r.y + r.height }, { x: r.x, y: r.y })
+    // (r.contains(p1) && r.contains(p2));
+}
