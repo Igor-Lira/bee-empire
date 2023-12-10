@@ -65,6 +65,7 @@ function handleRightClick(event) {
 
   if (objects[0].selected) {
     objects[0].focused = true;
+    objects[0].isMoving = true;
     if(objects[0].movement) {
       clearInterval(objects[0].movement);
     }
@@ -80,6 +81,7 @@ function handleRightClick(event) {
 
 
 function move(mouseX, mouseY) {
+  if (!objects[0].isMoving) return;
   const targetX = mouseX - objects[0].x;
   const targetY = mouseY - objects[0].y;
   const deg = Math.atan2(targetY, targetX);
@@ -97,6 +99,7 @@ function move(mouseX, mouseY) {
   if (wallCollision) {
     deltaX = -10*deltaX;
     deltaY = -10*deltaY;
+    objects[0].isMoving = false;
   }
   if (!wallCollision && objects.length > 1) {
     const intersect = getIntersection(objects[0], objects[1]);
