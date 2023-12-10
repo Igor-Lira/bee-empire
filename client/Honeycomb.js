@@ -49,7 +49,7 @@ class Honeycomb {
 
   drawMyWalls() {
     this.forEachWall((wall => {
-      if (hexagons[wall.hexagon]?.mine && hexagons[wall.hexagonBorder]?.mine) {
+      if (this.hexagons[wall.hexagon]?.isMine && this.hexagons[wall.hexagonBorder]?.isMine) {
         ctx.moveTo(wall.boundary.x1, wall.boundary.y1);
         ctx.lineTo(wall.boundary.x2, wall.boundary.y2);
         ctx.strokeStyle = '#f0e68c';

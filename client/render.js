@@ -2,7 +2,6 @@ function addBee (bee) {
   const _bee = new Bee(id);
   map.bees[_bee.id] = _bee;
   id++;
-  objects.push(bee);
 }
 
 function checkFights() {

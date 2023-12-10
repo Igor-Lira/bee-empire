@@ -24,10 +24,6 @@ const cursor = {
   height : 28
 };
 
-let objects = [];
-let hexagons = {};
-let walls = [];
-
 let isMouseover = false;
 
 window.requestAnimFrame = (function () {
