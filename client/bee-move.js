@@ -91,12 +91,14 @@ function move(mouseX, mouseY) {
 
 
   let wallCollision = false;
-  for (let id in hexagons) {
-    if (!hexagons[id].mine) {
-      for (let line of hexagons[id].walls) {
+  for (let hexId in map.honeycomb.hexagons) {
+    let hex = map.honeycomb.hexagons[hexId];
+    if (!hex.mine) {
+      for (let wallId in hex.walls) {
+        let bound = hex.walls[wallId].boundary;
         if (lineIntersectsRect(
-          {x: line.boundary.x1, y: line.boundary.y1},
-          {x: line.boundary.x2, y: line.boundary.y2},
+          {x: bound.x1, y: bound.y1},
+          {x: bound.x2, y: bound.y2},
           objects[0])
         ) {
           wallCollision = true;

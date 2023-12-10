@@ -1,5 +1,7 @@
 class Wall {
   id;
+  x;
+  y;
   boundary;
   direction;
   collisions = [];
@@ -10,13 +12,15 @@ class Wall {
     playerA: 0,
     playerB: 0,
   }
-  constructor(hexagon, size, type, x, y, row, col) {
+
+  constructor(type, x, y, row, col, size) {
+    this.x = x;
+    this.y = y;
     this.hexagon = row.toString() + col.toString();
-    this.hexagon = (row+1).toString() + (col+1).toString();
-    this.geometry(type, x, y, size, hexagon);
+    this.geometry(type, x, y, row, col, size);
   }
 
-  geometry(type, x, y, size, hexagon) {
+  geometry(type, x, y, row, col, size) {
     switch (type) {
       case 1: {
         this.boundary = {
@@ -26,6 +30,16 @@ class Wall {
           y2: y + Math.sqrt(3) * size / 2
         }
         this.direction = { i: -1, j: 1 };
+        if (row % 2 === 0) {
+          this.hexagonBorder = (row).toString() + (col+1).toString();
+        } else {
+          this.hexagonBorder = (row+1).toString() + (col+1).toString();
+        }
+
+        if (row === rows.length -1 ) {
+          this.hexagonBorder = null;
+        }
+
         this.id = this.hexagon + 'L1';
         break;
       }
@@ -38,6 +52,13 @@ class Wall {
           y2: y - Math.sqrt(3) * size / 2
         }
         this.direction = { i: -1, j: 0 };
+        this.hexagonBorder = (row).toString() + (col+1).toString();
+        if (row === 0 && col === cols.length -1) {
+          this.hexagonBorder = null;
+        }
+        if (row === rows.length -1 && col === cols.length -1) {
+          this.hexagonBorder = null;
+        }
         this.id = this.hexagon + 'L2';
         break;
       }
@@ -50,6 +71,17 @@ class Wall {
           y2: y - size * Math.sqrt(3)
         }
         this.direction = { i: -1, j: -1 };
+        if (row % 2 === 0) {
+          this.hexagonBorder = (row-1).toString() + (col).toString();
+        } else {
+          this.hexagonBorder = (row-1).toString() + (col+1).toString();
+        }
+        if (row === 0) {
+          this.hexagonBorder = null;
+        }
+        if (row === 0 && col === cols.length -1) {
+          this.hexagonBorder = null;
+        }
         this.id = this.hexagon + 'L3';
         break;
       }
@@ -62,6 +94,17 @@ class Wall {
           y2: y - Math.sqrt(3) * size / 2
         }
         this.id = this.hexagon + 'L4';
+        if (row % 2 === 0) {
+          this.hexagonBorder = (row-1).toString() + (col-1).toString();
+        } else {
+          this.hexagonBorder = (row-1).toString() + (col).toString();
+        }
+        if (row === 0) {
+          this.hexagonBorder = null;
+        }
+        if (row === rows.length -1 && col === 0) {
+          this.hexagonBorder = null;
+        }
         this.direction = { i: 1, j: -1 };
         break;
       }
@@ -74,6 +117,13 @@ class Wall {
           y2: y + Math.sqrt(3) * size / 2
         }
         this.id = this.hexagon + 'L5';
+        this.hexagonBorder = (row).toString() + (col-1).toString();
+        if (row === 0 && col === 0) {
+          this.hexagonBorder = null;
+        }
+        if (row === rows.length -1 && col === 0) {
+          this.hexagonBorder = null;
+        }
         this.direction = { i: 1, j: 0 };
         break;
       }
@@ -86,9 +136,27 @@ class Wall {
           y2: y + size * Math.sqrt(3)
         }
         this.id = this.hexagon + 'L6';
+        if (row % 2 === 0) {
+          this.hexagonBorder = (row+1).toString() + (col-1).toString();
+        } else {
+          this.hexagonBorder = (row+1).toString() + (col).toString();
+        }
+        if (row === rows.length -1 ) {
+          this.hexagonBorder = null;
+        }
+        if (row === 0 && col === 0) {
+          this.hexagonBorder = null;
+        }
         this.direction = { i: 1, j: 1 };
         break;
       }
     }
+  }
+
+  draw(move = false) {
+    if (move) {
+      ctx.moveTo(this.boundary.x1, this.boundary.y1);
+    }
+    ctx.lineTo(this.boundary.x2, this.boundary.y2);
   }
 }

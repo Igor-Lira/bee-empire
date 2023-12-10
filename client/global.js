@@ -3,6 +3,7 @@ let selectionBox = document.getElementById('selection-box');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+ctx.font = "48px serif";
 
 let id = 0;
 const map = {
@@ -10,8 +11,10 @@ const map = {
   y: 0,
   width: window.innerWidth,
   height: window.innerHeight,
+  honeycomb: null,
   maxLevels: 4
 };
+
 
 const cursor = {
   x : 0,
@@ -36,3 +39,10 @@ window.requestAnimFrame = (function () {
     };
 })();
 
+const hexSize = 100;
+const hexHeight = hexSize * Math.sqrt(3);
+const hexWidth = hexSize * 1.5;
+const rows = 3;
+const cols = 3;
+const xOffset = 500;
+const yOffset = 200;
