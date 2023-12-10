@@ -45,10 +45,17 @@ function drawObjects() {
 };
 
 
-function drawHexagon(x, y, size, row, col, add=false) {
+function drawHexagon(x, y, size, row, col, add= false) {
+  // TODO: how to know if it is my hexagon.
   ctx.beginPath();
   ctx.fillStyle = '#F9F171';
   ctx.lineWidth = 5;
+
+  if (row %2 === 0) {
+    ctx.strokeStyle = '#f0e68c';
+  } else {
+    ctx.strokeStyle = '#000';
+  }
 
   let line;
 
@@ -93,14 +100,25 @@ function drawHexagon(x, y, size, row, col, add=false) {
     line = {  x1: x - 1.5*size, y1: y + Math.sqrt(3)*size/2, x2: x, y2: y + size*Math.sqrt(3), i: 1, j: 1}
     walls.push(line);
   }
-  // line = new Quadtree.Line({ x1: x - 1.5*size, y1: y - Math.sqrt(3)*size/2, x2: x - 1.5*size, y2: y + Math.sqrt(3)*size/2 })
+
+  if (add) {
+    let hexagonId = row.toString() + col.toString();
+    hexagons[hexagonId] = {}
+    hexagons[hexagonId].walls = walls.slice(walls.length - 6, walls.length);
+    if (row % 2 === 0) {
+      hexagons[hexagonId].mine = true;
+      ctx.fillStyle = '#FFF';
+    }
+  }
+
 
   ctx.fill();
   ctx.closePath();
   ctx.stroke();
   ctx.beginPath();
   ctx.ellipse(x, y, size, size,  Math.PI / 180, 0, 2 * Math.PI);
-  ctx.fillStyle = '#E6CC47'
+  ctx.strokeStyle = '#000';
+  ctx.fillStyle = '#E6CC47';
   ctx.stroke();
   ctx.fill();
   ctx.closePath();

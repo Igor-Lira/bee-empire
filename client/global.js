@@ -20,6 +20,7 @@ const cursor = {
 };
 
 let objects = [];
+let hexagons = {};
 let walls = [];
 
 let isMouseover = false;

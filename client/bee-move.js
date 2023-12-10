@@ -91,11 +91,16 @@ function move(mouseX, mouseY) {
 
 
   let wallCollision = false;
-  for (let line of walls) {
-    if (lineIntersectsRect({x: line.x1, y: line.y1}, {x: line.x2, y: line.y2}, objects[0])) {
-      wallCollision = true;
+  for (let id in hexagons) {
+    if (!hexagons[id].mine) {
+      for (let line of hexagons[id].walls) {
+        if (lineIntersectsRect({x: line.x1, y: line.y1}, {x: line.x2, y: line.y2}, objects[0])) {
+          wallCollision = true;
+        }
+      }
     }
   }
+
   if (wallCollision) {
     deltaX = -10*deltaX;
     deltaY = -10*deltaY;
