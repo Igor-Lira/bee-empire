@@ -1,15 +1,15 @@
 function handleAddBee (rect) {
   if(!rect) {
     rect = {
-      x : randMinMax(0, map.bounds.width-32),
-      y : randMinMax(0, map.bounds.height-32),
+      x : randMinMax(0, map.width-32),
+      y : randMinMax(0, map.height-32),
       width : 20,
       height : 20,
       check : false
     };
   }
   objects.push(rect);
-  map.insert(rect);
+  // map.insert(rect);
 }
 
 

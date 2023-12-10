@@ -4,13 +4,13 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const map = new Quadtree({
+const map = {
   x: 0,
   y: 0,
   width: window.innerWidth,
   height: window.innerHeight,
   maxLevels: 4
-});
+};
 
 const cursor = {
   x : 0,
