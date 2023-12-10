@@ -162,8 +162,8 @@ class Wall {
 
   checkBeesCollisions() {
     const WALL_OFFSET = 20;
-    for (let beeId in map.bees) {
-      let bee = map.bees[beeId];
+    for (let beeId in world.bees) {
+      let bee = world.bees[beeId];
       if (
         lineIntersectsRect(
           {x: this.boundary.x1 + WALL_OFFSET*this.direction.i, y: this.boundary.y1 + WALL_OFFSET*this.direction.j},
@@ -217,8 +217,8 @@ class Wall {
         this.fight.playerB++;
       }
       if (this.fight.playerA > 100) {
-        if (this.hexagonBorder && map.honeycomb.hexagons[this.hexagonBorder]) {
-          map.honeycomb.hexagons[this.hexagonBorder].isMine = true;
+        if (this.hexagonBorder && world.honeycomb.hexagons[this.hexagonBorder]) {
+          world.honeycomb.hexagons[this.hexagonBorder].isMine = true;
         }
       }
     } else {

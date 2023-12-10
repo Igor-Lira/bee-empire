@@ -6,16 +6,6 @@ canvas.height = window.innerHeight;
 ctx.font = "48px serif";
 
 let id = 0;
-const map = {
-  x: 0,
-  y: 0,
-  width: window.innerWidth,
-  height: window.innerHeight,
-  honeycomb: {},
-  bees: {},
-  maxLevels: 4
-};
-
 
 const cursor = {
   x : 0,

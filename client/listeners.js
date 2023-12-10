@@ -30,8 +30,8 @@ document.addEventListener('mousemove', (e) => {
     selectionBox.style.top = cursor.y + 'px';
   }
 
-  for (let beeId in map.bees) {
-    map.bees[beeId].isInsideSelectionBox({
+  for (let beeId in world.bees) {
+    world.bees[beeId].isInsideSelectionBox({
       offsetLeft: selectionBox.offsetLeft,
       offsetTop: selectionBox.offsetTop,
       width: Math.abs(boxWidth),
@@ -43,8 +43,8 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseup', () => {
   isDragging = false;
   isMouseover = false;
-  for (let beeId in map.bees) {
-    map.bees[beeId].onMouseUp();
+  for (let beeId in world.bees) {
+    world.bees[beeId].onMouseUp();
   }
   selectionBox.style.display = 'none';
 });
@@ -58,8 +58,8 @@ function handleRightClick(event) {
   myDiv.style.top = event.pageY - 20 + 'px';
   const placeholderClick = document.getElementById("right-click");
   placeholderClick.appendChild(myDiv);
-  for (let beeId in map.bees) {
-    map.bees[beeId].onRightClick(event);
+  for (let beeId in world.bees) {
+    world.bees[beeId].onRightClick(event);
   }
 }
 

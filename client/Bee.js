@@ -13,8 +13,8 @@ class Bee {
   beeCollisions;
 
   constructor(id) {
-    this.x = randMinMax(0, map.width-32);
-    this.y = randMinMax(0, map.height-32);
+    this.x = randMinMax(0, world.width-32);
+    this.y = randMinMax(0, world.height-32);
     this.width = 30;
     this.height = 30;
     this.id = id;
@@ -97,9 +97,9 @@ class Bee {
   }
 
   dodgeOtherBees() {
-    for (let beeId in map.bees) {
+    for (let beeId in world.bees) {
       if (Number(beeId) !== this.id) {
-        let bee = map.bees[beeId];
+        let bee = world.bees[beeId];
         const intersect = getIntersection(this, bee);
         if (intersect) {
           if (!this.beeCollisions.includes(beeId)) {
@@ -130,7 +130,7 @@ class Bee {
 
   stopMoveOnWalls(deltaX, deltaY) {
     let wallCollision = false;
-    map.honeycomb.forEachWall(wall => {
+    world.honeycomb.forEachWall(wall => {
       if (wall.collisions.includes(this.id)) {
         wallCollision = true;
       }
