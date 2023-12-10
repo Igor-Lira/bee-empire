@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let id = 0;
 const map = {
   x: 0,
   y: 0,

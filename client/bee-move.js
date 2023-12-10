@@ -57,7 +57,7 @@ document.addEventListener('mouseup', () => {
 
 
 function handleRightClick(event) {
-  event.preventDefault(); // Prevent default right-click menu
+  // event.preventDefault(); // Prevent default right-click menu
   const myDiv = document.createElement("div");
   myDiv.classList.add('right-click-animation');
   myDiv.style.left = event.pageX - 20 + 'px';
@@ -94,7 +94,11 @@ function move(mouseX, mouseY) {
   for (let id in hexagons) {
     if (!hexagons[id].mine) {
       for (let line of hexagons[id].walls) {
-        if (lineIntersectsRect({x: line.x1, y: line.y1}, {x: line.x2, y: line.y2}, objects[0])) {
+        if (lineIntersectsRect(
+          {x: line.boundary.x1, y: line.boundary.y1},
+          {x: line.boundary.x2, y: line.boundary.y2},
+          objects[0])
+        ) {
           wallCollision = true;
         }
       }
