@@ -36,11 +36,13 @@ class Honeycomb {
   drawFights() {
     this.forEachWall((wall => {
       if (wall.isOnFight) {
+        ctx.beginPath();
         ctx.moveTo(wall.boundary.x1, wall.boundary.y1);
         ctx.lineTo(wall.boundary.x2, wall.boundary.y2);
         const fightColorsStyle = ['red', 'violet'];
         ctx.strokeStyle = fightColorsStyle[fightColorsStyle.length * Math.random() | 0];
         ctx.stroke();
+        ctx.closePath();
       }
     }));
   }
