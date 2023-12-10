@@ -11,7 +11,8 @@ const map = {
   y: 0,
   width: window.innerWidth,
   height: window.innerHeight,
-  honeycomb: null,
+  honeycomb: {},
+  bees: {},
   maxLevels: 4
 };
 

@@ -30,121 +30,36 @@ document.addEventListener('mousemove', (e) => {
     selectionBox.style.top = cursor.y + 'px';
   }
 
-  const isInside = isPointInsideSelectionBox(
-    objects[0].x,
-    objects[0].y,
-    selectionBox.offsetLeft,
-    selectionBox.offsetTop,
-    Math.abs(boxWidth),
-    Math.abs(boxHeight),
-  );
-  if (isInside) {
-    objects[0].selected = true;
-    objects[0].focused = true;
+  for (let beeId in map.bees) {
+    map.bees[beeId].isInsideSelectionBox({
+      offsetLeft: selectionBox.offsetLeft,
+      offsetTop: selectionBox.offsetTop,
+      width: Math.abs(boxWidth),
+      height: Math.abs(boxHeight),
+    });
   }
 });
 
 document.addEventListener('mouseup', () => {
   isDragging = false;
   isMouseover = false;
-  if (objects[0].focused) {
-    objects[0].focused = false;
-  } else {
-    objects[0].selected = false;
+  for (let beeId in map.bees) {
+    map.bees[beeId].onMouseUp();
   }
   selectionBox.style.display = 'none';
 });
 
 
 function handleRightClick(event) {
-  // event.preventDefault(); // Prevent default right-click menu
+  event.preventDefault(); // Prevent default right-click menu
   const myDiv = document.createElement("div");
   myDiv.classList.add('right-click-animation');
   myDiv.style.left = event.pageX - 20 + 'px';
   myDiv.style.top = event.pageY - 20 + 'px';
-
-  if (objects[0].selected) {
-    objects[0].focused = true;
-    objects[0].isMoving = true;
-    if(objects[0].movement) {
-      clearInterval(objects[0].movement);
-    }
-    move(event.pageX, event.pageY);
-  }
-
-  const right = document.getElementById("right-click");
-  right.appendChild(myDiv);
-  setTimeout(() => {
-    myDiv.remove();
-  }, 1000); // Change 1000 to the desired duration of the animation in milliseconds
-}
-
-
-function move(mouseX, mouseY) {
-  if (!objects[0].isMoving) return;
-  const targetX = mouseX - objects[0].x;
-  const targetY = mouseY - objects[0].y;
-  const deg = Math.atan2(targetY, targetX);
-  const dist = Math.hypot(targetX, targetY);
-  let deltaX = 0.8 * Math.cos(deg);
-  let deltaY = 0.8 * Math.sin(deg);
-
-
-  let wallCollision = false;
-  for (let hexId in map.honeycomb.hexagons) {
-    let hex = map.honeycomb.hexagons[hexId];
-    if (!hex.mine) {
-      for (let wallId in hex.walls) {
-        let bound = hex.walls[wallId].boundary;
-        if (lineIntersectsRect(
-          {x: bound.x1, y: bound.y1},
-          {x: bound.x2, y: bound.y2},
-          objects[0])
-        ) {
-          wallCollision = true;
-        }
-      }
-    }
-  }
-
-  if (wallCollision) {
-    deltaX = -10*deltaX;
-    deltaY = -10*deltaY;
-    objects[0].isMoving = false;
-  }
-  if (!wallCollision && objects.length > 1) {
-    const intersect = getIntersection(objects[0], objects[1]);
-    if (intersect) {
-      // deltaX = intersection.pushX;
-      // deltaY = intersection.pushY;
-      if(intersect.pushX < intersect.pushY) {
-
-        if(intersect.dirX < 0) {
-          deltaX = - objects[1].width*0.2;
-        } else if(intersect.dirX > 0) {
-          deltaX = objects[1].width*0.2;
-        }
-      } else {
-
-        if(intersect.dirY < 0) {
-          deltaY = - objects[1].height*0.2;
-        } else if(intersect.dirY > 0) {
-          deltaY = + objects[1].height*0.2;
-        }
-      }
-    }
-  }
-
-  if (!isNaN(deltaX)) {
-    objects[0].x += deltaX;
-  }
-  if (!isNaN(deltaY)) {
-    objects[0].y += deltaY;
-  }
-  if (dist > 1) {
-    objects[0].movement = setTimeout(() => {
-      move(mouseX, mouseY);
-    }, 10)
+  const placeholderClick = document.getElementById("right-click");
+  placeholderClick.appendChild(myDiv);
+  for (let beeId in map.bees) {
+    map.bees[beeId].onRightClick(event);
   }
 }
 
