@@ -70,7 +70,7 @@ class Bee {
     let deltaX = 0.8 * Math.cos(deg);
     let deltaY = 0.8 * Math.sin(deg);
 
-    // this.stopMoveOnWalls();
+    this.stopMoveOnWalls();
     this.dodgeOtherBees();
 
       if (!isNaN(deltaX)) {
