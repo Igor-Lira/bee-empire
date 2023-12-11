@@ -1,5 +1,4 @@
 class Bee {
-
   id;
   player;
   x;
@@ -13,13 +12,12 @@ class Bee {
   beeCollisions;
 
   constructor(id) {
-    this.x = randMinMax(0, world.width-32);
-    this.y = randMinMax(0, world.height-32);
+    this.x = randMinMax(0, world.width - 32);
+    this.y = randMinMax(0, world.height - 32);
     this.width = 30;
     this.height = 30;
     this.id = id;
     this.player = id;
-    this.focused = false;
     this.selected = false;
     this.moving = false;
     this.beeCollisions = [];
@@ -32,25 +30,15 @@ class Bee {
       selectionBox.offsetLeft,
       selectionBox.offsetTop,
       Math.abs(selectionBox.width),
-      Math.abs(selectionBox.height),
+      Math.abs(selectionBox.height)
     );
     if (isInside) {
       this.selected = true;
-      this.focused = true;
-    }
-  }
-
-  onMouseUp() {
-    if (this.focused) {
-      this.focused = false;
-    } else {
-      this.selected = false;
     }
   }
 
   onRightClick(event) {
     if (this.selected) {
-      this.focused = true;
       this.isMoving = true;
 
       if (this.trajectory) {
@@ -73,25 +61,25 @@ class Bee {
     this.stopMoveOnWalls();
     this.dodgeOtherBees();
 
-      if (!isNaN(deltaX)) {
-        this.x += deltaX;
-      }
-      if (!isNaN(deltaY)) {
-        this.y += deltaY;
-      }
+    if (!isNaN(deltaX)) {
+      this.x += deltaX;
+    }
+    if (!isNaN(deltaY)) {
+      this.y += deltaY;
+    }
 
     if (dist > 1) {
       this.trajectory = setTimeout(() => {
         this.move(mouseX, mouseY);
-      }, 10)
+      }, 10);
     }
   }
 
   draw() {
     if (this.selected) {
-      ctx.fillStyle = 'red';
+      ctx.fillStyle = "red";
     } else {
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = "blue";
     }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
@@ -105,21 +93,21 @@ class Bee {
           if (!this.beeCollisions.includes(beeId)) {
             this.beeCollisions.push(beeId);
           }
-          if(intersect.pushX < intersect.pushY) {
-            if(intersect.dirX < 0) {
-              this.x -= bee.width*0.2;
-            } else if(intersect.dirX > 0) {
-              this.x += bee.width*0.2;
+          if (intersect.pushX < intersect.pushY) {
+            if (intersect.dirX < 0) {
+              this.x -= bee.width * 0.2;
+            } else if (intersect.dirX > 0) {
+              this.x += bee.width * 0.2;
             }
           } else {
-            if(intersect.dirY < 0) {
-              this.y -= bee.height*0.2;
-            } else if(intersect.dirY > 0) {
-              this.y +=  bee.height*0.2;
+            if (intersect.dirY < 0) {
+              this.y -= bee.height * 0.2;
+            } else if (intersect.dirY > 0) {
+              this.y += bee.height * 0.2;
             }
           }
         } else {
-          const beeIndex = this.beeCollisions.findIndex(c => c === beeId);
+          const beeIndex = this.beeCollisions.findIndex((c) => c === beeId);
           if (beeIndex > -1) {
             this.beeCollisions.splice(beeIndex, 1);
           }
@@ -130,15 +118,15 @@ class Bee {
 
   stopMoveOnWalls(deltaX, deltaY) {
     let wallCollision = false;
-    world.honeycomb.forEachWall(wall => {
+    world.honeycomb.forEachWall((wall) => {
       if (wall.collisions.includes(this.id)) {
         wallCollision = true;
       }
     });
 
     if (wallCollision) {
-      deltaX = -10*deltaX;
-      deltaY = -10*deltaY;
+      deltaX = -10 * deltaX;
+      deltaY = -10 * deltaY;
       this.isMoving = false;
     }
   }

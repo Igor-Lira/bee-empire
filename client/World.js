@@ -4,7 +4,7 @@ class World {
   width;
   height;
   honeycomb = null;
-  bees = {};
+  bees = [];
 
   constructor() {
     this.x = 0;
@@ -15,10 +15,10 @@ class World {
   }
 
   loop() {
-    ctx.clearRect(this.x,this.y, this.width, this.height);
+    ctx.clearRect(this.x, this.y, this.width, this.height);
     this.drawEntities();
     requestAnimFrame(() => this.loop(this));
-  };
+  }
 
   checkFightLoop() {
     setInterval(() => this.checkFights(this), 10);
@@ -27,15 +27,15 @@ class World {
   checkFights() {
     this.honeycomb.forEachWall((wall) => {
       wall.checkBeesCollisions();
-      wall.computeFightResult()
+      wall.computeFightResult();
     });
   }
 
-  addBee (bee) {
+  addBee(bee) {
     const _bee = new Bee(id);
     this.bees[_bee.id] = _bee;
     id++;
-  };
+  }
 
   drawEntities() {
     this.honeycomb.draw();
