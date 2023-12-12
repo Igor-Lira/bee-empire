@@ -24,6 +24,10 @@ class Hexagon {
 
   drawWalls() {
     ctx.beginPath();
+    const _fillStyle = ctx.fillStyle;
+    const _lineWidth = ctx.lineWidth;
+    const _strokeStyle = ctx.strokeStyle;
+
     ctx.fillStyle = '#F9F171';
     if (this.isMine) {
       ctx.fillStyle = '#e3ff00';
@@ -36,15 +40,26 @@ class Hexagon {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
+    ctx.fillStyle = _fillStyle;
+    ctx.lineWidth = _lineWidth;
+    ctx.strokeStyle = _strokeStyle;
   }
 
   drawCenter() {
+    const _strokeStyle = ctx.strokeStyle;
+    const _fillStyle = ctx.fillStyle;
+    const _lineWidth = ctx.lineWidth;
     ctx.beginPath();
     ctx.ellipse(this.x, this.y, this.size, this.size,  Math.PI / 180, 0, 2 * Math.PI);
     ctx.strokeStyle = '#000';
     ctx.fillStyle = '#E6CC47';
+    ctx.lineWidth = 5;
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
+    ctx.strokeStyle = _strokeStyle;
+    ctx.fillStyle = _fillStyle;
+    ctx.lineWidth = _lineWidth;
   }
 }
