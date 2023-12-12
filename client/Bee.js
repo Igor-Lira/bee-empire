@@ -58,20 +58,25 @@ class Bee {
     let deltaX = 0.8 * Math.cos(deg);
     let deltaY = 0.8 * Math.sin(deg);
 
-    this.stopMoveOnWalls();
-    this.dodgeOtherBees();
+    const wallCollision = this.checkForWallCollision();
+    if (wallCollision) {
+        this.x += -deltaX;
+        this.y += -deltaY;
+    } else {
+      this.dodgeOtherBees();
 
-    if (!isNaN(deltaX)) {
-      this.x += deltaX;
-    }
-    if (!isNaN(deltaY)) {
-      this.y += deltaY;
-    }
+      if (!isNaN(deltaX)) {
+        this.x += deltaX;
+      }
+      if (!isNaN(deltaY)) {
+        this.y += deltaY;
+      }
 
-    if (dist > 1) {
-      this.trajectory = setTimeout(() => {
-        this.move(mouseX, mouseY);
-      }, 10);
+      if (dist > 1) {
+        this.trajectory = setTimeout(() => {
+          this.move(mouseX, mouseY);
+        }, 10);
+      }
     }
   }
 
@@ -140,18 +145,13 @@ class Bee {
     }
   }
 
-  stopMoveOnWalls(deltaX, deltaY) {
+  checkForWallCollision(deltaX, deltaY) {
     let wallCollision = false;
     world.honeycomb.forEachWall((wall) => {
       if (wall.collisions.includes(this.id)) {
         wallCollision = true;
       }
     });
-
-    if (wallCollision) {
-      deltaX = -10 * deltaX;
-      deltaY = -10 * deltaY;
-      this.isMoving = false;
-    }
+    return wallCollision;
   }
 }
