@@ -76,12 +76,36 @@ class Bee {
   }
 
   draw() {
+    const _strokeStyle = ctx.strokeStyle;
+    const _fillStyle = ctx.strokeStyle;
+    const _lineWidth = ctx.lineWidth;
+
     if (this.selected) {
       ctx.fillStyle = "red";
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 1;
     } else {
       ctx.fillStyle = "blue";
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 1;
     }
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+
+    // ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    ctx.strokeStyle = _strokeStyle;
+    ctx.fillStyle = _fillStyle;
+    ctx.lineWidth = _lineWidth;
+
+    const img = new Image();
+    if (this.selected) {
+      img.src = 'assets/bee-selected.png';
+    } else {
+      img.src = "assets/bee.png";
+    }
+
+    const imgWidth = 25;
+    ctx.drawImage(img, this.x - imgWidth/2 , this.y- imgWidth/2);
   }
 
   dodgeOtherBees() {
