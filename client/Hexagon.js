@@ -3,7 +3,7 @@ class Hexagon {
   x;
   y;
   size;
-  walls = [];
+  walls = {};
   isMine = false;
 
   constructor(x, y, row, col, hexSize) {
@@ -20,6 +20,20 @@ class Hexagon {
   draw() {
     this.drawWalls();
     this.drawCenter();
+  }
+
+  conquer() {
+    this.isMine = true;
+    for (let id in this.walls) {
+      this.walls[id].conquer();
+    }
+  }
+
+  lose() {
+    this.isMine = false;
+    this.walls.forEach(wall => {
+      wall.isMine = false;
+    });
   }
 
   drawWalls() {

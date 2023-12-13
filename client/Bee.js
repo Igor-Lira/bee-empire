@@ -5,7 +5,6 @@ class Bee {
   y;
   width;
   height;
-  focused;
   selected;
   moving;
   trajectory;
@@ -71,7 +70,6 @@ class Bee {
       if (!isNaN(deltaY)) {
         this.y += deltaY;
       }
-
       if (dist > 1) {
         this.trajectory = setTimeout(() => {
           this.move(mouseX, mouseY);
@@ -145,10 +143,10 @@ class Bee {
     }
   }
 
-  checkForWallCollision(deltaX, deltaY) {
+  checkForWallCollision() {
     let wallCollision = false;
     world.honeycomb.forEachWall((wall) => {
-      if (wall.collisions.includes(this.id)) {
+      if (wall.collisions.includes(this.id) && !wall.isMine) {
         wallCollision = true;
       }
     });

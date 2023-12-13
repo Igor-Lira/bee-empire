@@ -2,6 +2,7 @@ class Wall {
   id;
   x;
   y;
+  isMine = false;
   boundary;
   direction;
   collisions = [];
@@ -16,6 +17,7 @@ class Wall {
   constructor(type, x, y, row, col, size) {
     this.x = x;
     this.y = y;
+    this.isMine = false;
     this.hexagon = row.toString() + col.toString();
     this.geometry(type, x, y, row, col, size);
   }
@@ -109,8 +111,6 @@ class Wall {
           this.hexagonBorder = null;
         }
 
-        console.log(this.hexagonBorder)
-
         this.direction = { i: 1, j: -1 };
         break;
       }
@@ -193,9 +193,9 @@ class Wall {
     }
   }
 
+  // TODO: This method should be in world Controller
   computeFightResult() {
     if (this.collisions.length > 0) {
-      console.log('this.collisions', this.collisions.length);
       let numberOfBeesPlayerA = 0;
       let numbersOfBeesPlayerB = 0;
       for (let collision of this.collisions) {
@@ -233,13 +233,18 @@ class Wall {
         }
       }
       if (this.fight.playerA > 99) {
-        console.log(this.hexagonBorder)
         if (this.hexagonBorder && world.honeycomb.hexagons[this.hexagonBorder]) {
-          world.honeycomb.hexagons[this.hexagonBorder].isMine = true;
+          world.honeycomb.hexagons[this.hexagon]?.conquer();
+          world.honeycomb.hexagons[this.hexagonBorder]?.conquer();
+
         }
       }
     } else {
       this.isOnFight = false;
     }
+  }
+
+  conquer() {
+    this.isMine = true;
   }
 }
