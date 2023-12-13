@@ -51,7 +51,7 @@ document.addEventListener("mouseup", () => {
 });
 
 function handleRightClick(event) {
-  event.preventDefault(); // Prevent default right-click menu
+  // event.preventDefault(); // Prevent default right-click menu
   const myDiv = document.createElement("div");
   myDiv.classList.add("right-click-animation");
   myDiv.style.left = event.pageX - 20 + "px";

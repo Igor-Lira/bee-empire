@@ -60,8 +60,8 @@ class Bee {
 
     const wallCollision = this.checkForWallCollision();
     if (wallCollision) {
-        this.x += -deltaX;
-        this.y += -deltaY;
+        this.x += deltaX;
+        this.y += deltaY;
     } else {
       this.dodgeOtherBees();
 

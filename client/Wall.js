@@ -31,12 +31,12 @@ class Wall {
         }
         this.direction = { i: -1, j: 1 };
         if (row % 2 === 0) {
-          this.hexagonBorder = (row).toString() + (col+1).toString();
+          this.hexagonBorder = (row+1).toString() + (col).toString();
         } else {
           this.hexagonBorder = (row+1).toString() + (col+1).toString();
         }
 
-        if (row === rows.length -1 ) {
+        if (row === rows -1 ) {
           this.hexagonBorder = null;
         }
 
@@ -53,12 +53,13 @@ class Wall {
         }
         this.direction = { i: -1, j: 0 };
         this.hexagonBorder = (row).toString() + (col+1).toString();
-        if (row === 0 && col === cols.length -1) {
+        if (row === 0 && col === cols -1) {
           this.hexagonBorder = null;
         }
-        if (row === rows.length -1 && col === cols.length -1) {
+        if (row === rows -1 && col === cols -1) {
           this.hexagonBorder = null;
         }
+
         this.id = this.hexagon + 'L2';
         break;
       }
@@ -79,7 +80,7 @@ class Wall {
         if (row === 0) {
           this.hexagonBorder = null;
         }
-        if (row === 0 && col === cols.length -1) {
+        if (row === 0 && col === cols -1) {
           this.hexagonBorder = null;
         }
         this.id = this.hexagon + 'L3';
@@ -102,9 +103,14 @@ class Wall {
         if (row === 0) {
           this.hexagonBorder = null;
         }
-        if (row === rows.length -1 && col === 0) {
+
+
+        if (row === rows -1 && col === 0) {
           this.hexagonBorder = null;
         }
+
+        console.log(this.hexagonBorder)
+
         this.direction = { i: 1, j: -1 };
         break;
       }
@@ -121,7 +127,7 @@ class Wall {
         if (row === 0 && col === 0) {
           this.hexagonBorder = null;
         }
-        if (row === rows.length -1 && col === 0) {
+        if (row === rows -1 && col === 0) {
           this.hexagonBorder = null;
         }
         this.direction = { i: 1, j: 0 };
@@ -141,7 +147,7 @@ class Wall {
         } else {
           this.hexagonBorder = (row+1).toString() + (col).toString();
         }
-        if (row === rows.length -1 ) {
+        if (row === rows -1 ) {
           this.hexagonBorder = null;
         }
         if (row === 0 && col === 0) {
@@ -189,19 +195,21 @@ class Wall {
 
   computeFightResult() {
     if (this.collisions.length > 0) {
-      let numberPlayerA = 0;
-      let numberPlayerB = 0;
+      console.log('this.collisions', this.collisions.length);
+      let numberOfBeesPlayerA = 0;
+      let numbersOfBeesPlayerB = 0;
       for (let collision of this.collisions) {
         if (collision === 0) {
-          numberPlayerA++;
+          numberOfBeesPlayerA++;
         }
         if (collision === 1) {
-          numberPlayerB++;
+          numberOfBeesPlayerA++;
         }
       }
+
       // if ((numberPlayerA > 0 && !hexagons[wall.hexagonBorder]?.mine) || numberPlayerB > 0) {
 
-      if (numberPlayerA > 0 || numberPlayerB > 0) {
+      if (numberOfBeesPlayerA > 0 || numbersOfBeesPlayerB > 0) {
         this.isOnFight = true;
       } else {
         this.isOnFight = false;
@@ -209,14 +217,23 @@ class Wall {
         this.fight.playerB = 0;
       }
 
-      if (numberPlayerA > numberPlayerB) {
-        this.fight.playerA++;
-        this.fight.playerB--;
+      if (numberOfBeesPlayerA > numbersOfBeesPlayerB) {
+        if (this.fight.playerA < 100) {
+          this.fight.playerA++;
+        }
+        if (this.fight.playerB > 0) {
+          this.fight.playerB--;
+        }
       } else {
-        this.fight.playerA--;
-        this.fight.playerB++;
+        if (this.fight.playerA > 0) {
+          this.fight.playerA--;
+        }
+        if (this.fight.playerB < 100) {
+          this.fight.playerB++;
+        }
       }
-      if (this.fight.playerA > 100) {
+      if (this.fight.playerA > 99) {
+        console.log(this.hexagonBorder)
         if (this.hexagonBorder && world.honeycomb.hexagons[this.hexagonBorder]) {
           world.honeycomb.hexagons[this.hexagonBorder].isMine = true;
         }
