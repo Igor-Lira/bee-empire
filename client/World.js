@@ -45,4 +45,10 @@ class World {
       this.bees[beeId].draw();
     }
   }
+
+  randomHexagon (){
+    const hexagons = this.honeycomb.hexagons;
+    let keys = Object.keys(hexagons);
+    return hexagons[keys[ keys.length * Math.random() << 0]];
+  };
 }

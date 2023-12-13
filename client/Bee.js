@@ -11,8 +11,9 @@ class Bee {
   beeCollisions;
 
   constructor(id) {
-    this.x = randMinMax(0, world.width - 32);
-    this.y = randMinMax(0, world.height - 32);
+    const hexagon = world.randomHexagon();
+    this.x = hexagon.x;
+    this.y = hexagon.y;
     this.width = 30;
     this.height = 30;
     this.id = id;
