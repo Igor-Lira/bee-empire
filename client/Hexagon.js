@@ -37,11 +37,11 @@ class Hexagon {
   }
 
   drawWalls() {
-    ctx.beginPath();
     const _fillStyle = ctx.fillStyle;
     const _lineWidth = ctx.lineWidth;
     const _strokeStyle = ctx.strokeStyle;
 
+    ctx.beginPath();
     ctx.fillStyle = '#F9F171';
     if (this.isMine) {
       ctx.fillStyle = '#e3ff00';
