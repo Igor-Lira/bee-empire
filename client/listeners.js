@@ -12,7 +12,6 @@ document.addEventListener("mousedown", (event) => {
   selectionBox.style.width = "0px";
   selectionBox.style.height = "0px";
 
-  //On left click, should set selected false to all bees
   world.bees.map((bee) => (bee.selected = false));
 });
 
@@ -51,7 +50,7 @@ document.addEventListener("mouseup", () => {
 });
 
 function handleRightClick(event) {
-  event.preventDefault(); // Prevent default right-click menu
+  event.preventDefault();
   const myDiv = document.createElement("div");
   myDiv.classList.add("right-click-animation");
   myDiv.style.left = event.pageX - 20 + "px";

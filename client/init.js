@@ -1,5 +1,6 @@
 const world = new World();
-world.addBee();
-world.addBee();
+const player = world.addPlayer(1);
+world.addBee(player, 1);
+world.addBee(player, 2);
 world.loop();
 world.checkFightLoop();

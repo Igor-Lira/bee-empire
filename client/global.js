@@ -31,5 +31,9 @@ const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
 const rows = 3;
 const cols = 3;
-const xOffset = 500;
-const yOffset = 200;
+const xOffset = 0;
+const yOffset = 0;
+
+function log(type, message) {
+  console.log('[' + type + ']:' + message)
+}

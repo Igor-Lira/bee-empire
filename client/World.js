@@ -5,6 +5,7 @@ class World {
   height;
   honeycomb = null;
   bees = [];
+  players = {};
 
   constructor() {
     this.x = 0;
@@ -31,10 +32,20 @@ class World {
     });
   }
 
-  addBee(bee) {
-    const _bee = new Bee(id);
-    this.bees[_bee.id] = _bee;
-    id++;
+  addPlayer() {
+    const player = new Player(id);
+    this.players[player.id] = player;
+    const hexagon = this.randomHexagon();
+    player.hexagons[hexagon.id] = hexagon.id;
+    hexagon.conquer(player.id)
+    return player.id;
+  }
+
+  addBee(player, id) {
+    const bee = new Bee(player, id);
+    this.bees[bee.id] = bee;
+    this.players[player].bees[bee.id] = bee;
+    return bee.id;
   }
 
   drawEntities() {

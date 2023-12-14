@@ -4,6 +4,7 @@ class Hexagon {
   y;
   size;
   walls = {};
+  owner;
   isMine = false;
 
   constructor(x, y, row, col, hexSize) {
@@ -22,10 +23,11 @@ class Hexagon {
     this.drawCenter();
   }
 
-  conquer() {
+  conquer(playerId) {
+    this.owner = playerId;
     this.isMine = true;
     for (let id in this.walls) {
-      this.walls[id].conquer();
+      this.walls[id].conquer(playerId);
     }
   }
 

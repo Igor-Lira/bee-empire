@@ -10,14 +10,14 @@ class Bee {
   trajectory;
   beeCollisions;
 
-  constructor(id) {
-    const hexagon = world.randomHexagon();
-    this.x = hexagon.x;
-    this.y = hexagon.y;
+  constructor(player, id) {
+    const hexId = world.players[player].randomConqueredHexagon();
+    this.x = world.honeycomb.hexagons[hexId].x;
+    this.y = world.honeycomb.hexagons[hexId].y;
     this.width = 30;
     this.height = 30;
     this.id = id;
-    this.player = id;
+    this.player = player;
     this.selected = false;
     this.moving = false;
     this.beeCollisions = [];
