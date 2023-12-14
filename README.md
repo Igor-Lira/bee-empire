@@ -2,6 +2,8 @@
 A strategy multiplayer game to expand your bee empire over enemies corners.
 
 
+[Check the current version (work in progress)](https://igor-lira.github.io/bee-empire/client/index.html)
+
 # How to run this project
 
 Just open the index.html
