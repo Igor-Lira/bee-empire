@@ -55,18 +55,14 @@ class Hexagon {
   }
 
   drawCenter() {
-    const _strokeStyle = ctx.strokeStyle;
     const _fillStyle = ctx.fillStyle;
     const _lineWidth = ctx.lineWidth;
     ctx.beginPath();
     ctx.ellipse(this.x, this.y, this.size, this.size,  Math.PI / 180, 0, 2 * Math.PI);
-    ctx.strokeStyle = '#000';
     ctx.fillStyle = '#E6CC47';
     ctx.lineWidth = 5;
-    ctx.stroke();
     ctx.fill();
     ctx.closePath();
-    ctx.strokeStyle = _strokeStyle;
     ctx.fillStyle = _fillStyle;
     ctx.lineWidth = _lineWidth;
   }
