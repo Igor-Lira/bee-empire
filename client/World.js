@@ -32,12 +32,12 @@ class World {
     });
   }
 
-  addPlayer() {
-    const player = new Player(id);
+  addPlayer(playerId) {
+    const player = new Player(playerId);
     this.players[player.id] = player;
     const hexagon = this.randomHexagon();
     player.hexagons[hexagon.id] = hexagon.id;
-    hexagon.conquer(player.id)
+    hexagon.conquer(player.id);
     return player.id;
   }
 

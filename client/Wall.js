@@ -2,7 +2,6 @@ class Wall {
   id;
   x;
   y;
-  isMine = false;
   owner;
   boundary;
   direction;
@@ -18,7 +17,6 @@ class Wall {
   constructor(type, x, y, row, col, size) {
     this.x = x;
     this.y = y;
-    this.isMine = false;
     this.hexagon = row.toString() + col.toString();
     this.geometry(type, x, y, row, col, size);
   }
@@ -234,7 +232,7 @@ class Wall {
         }
       }
       if (this.fight.playerA > 99) {
-        if (this.hexagonBorder && world.honeycomb.hexagons[this.hexagonBorder]) {
+        if (this.owner && this.hexagonBorder && world.honeycomb.hexagons[this.hexagonBorder]) {
           world.honeycomb.hexagons[this.hexagonBorder]?.conquer(this.owner);
         }
       }
@@ -245,6 +243,5 @@ class Wall {
 
   conquer(playerId) {
     this.owner = playerId;
-    this.isMine = true;
   }
 }

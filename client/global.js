@@ -34,6 +34,8 @@ const cols = 3;
 const xOffset = 0;
 const yOffset = 0;
 
+const myId = 1;
+
 function log(type, message) {
   console.log('[' + type + ']:' + message)
 }

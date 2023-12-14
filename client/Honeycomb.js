@@ -35,7 +35,7 @@ class Honeycomb {
 
   drawFights() {
     this.forEachWall((wall => {
-      if (wall.isOnFight && !wall.isMine) {
+      if (wall.isOnFight && wall.owner !== myId) {
         const _strokeStyle = ctx.strokeStyle;
         const _lineWidth = ctx.lineWidth;
         ctx.beginPath();
@@ -54,7 +54,7 @@ class Honeycomb {
 
   drawMyWalls() {
     this.forEachWall((wall => {
-      if (this.hexagons[wall.hexagon]?.isMine && this.hexagons[wall.hexagonBorder]?.isMine) {
+      if (this.hexagons[wall.hexagon]?.owner === myId && this.hexagons[wall.hexagonBorder]?.owner === myId) {
         const _strokeStyle = ctx.strokeStyle;
         const _lineWidth = ctx.lineWidth;
         ctx.moveTo(wall.boundary.x1, wall.boundary.y1);

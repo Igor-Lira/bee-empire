@@ -5,7 +5,6 @@ class Hexagon {
   size;
   walls = {};
   owner;
-  isMine = false;
 
   constructor(x, y, row, col, hexSize) {
     this.id = row.toString() + col.toString();
@@ -25,18 +24,11 @@ class Hexagon {
 
   conquer(playerId) {
     this.owner = playerId;
-    this.isMine = true;
     for (let id in this.walls) {
       this.walls[id].conquer(playerId);
     }
   }
 
-  lose() {
-    this.isMine = false;
-    this.walls.forEach(wall => {
-      wall.isMine = false;
-    });
-  }
 
   drawWalls() {
     const _fillStyle = ctx.fillStyle;
@@ -45,7 +37,7 @@ class Hexagon {
 
     ctx.beginPath();
     ctx.fillStyle = '#F9F171';
-    if (this.isMine) {
+    if (this.owner === myId) {
       ctx.fillStyle = '#e3ff00';
     }
     ctx.lineWidth = 5;

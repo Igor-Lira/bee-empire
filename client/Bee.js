@@ -147,7 +147,7 @@ class Bee {
   checkForWallCollision() {
     let wallCollision = false;
     world.honeycomb.forEachWall((wall) => {
-      if (wall.collisions.includes(this.id) && !wall.isMine) {
+      if (wall.collisions.includes(this.id) && wall.owner !== myId) {
         wallCollision = true;
       }
     });
