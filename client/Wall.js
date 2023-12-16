@@ -160,9 +160,9 @@ class Wall {
 
   draw(move = false) {
     if (move) {
-      ctx.moveTo(this.boundary.x1, this.boundary.y1);
+      ctx.moveTo(this.boundary.x1 + xOffset, this.boundary.y1 + yOffset);
     }
-    ctx.lineTo(this.boundary.x2, this.boundary.y2);
+    ctx.lineTo(this.boundary.x2 + xOffset, this.boundary.y2 + yOffset);
   }
 
   checkBeesCollisions() {
@@ -195,7 +195,6 @@ class Wall {
   // TODO: This method should be in world Controller
   computeFightResult() {
     if (this.collisions.length > 0) {
-      log('COLLISION', this.collisions.length);
       let numberOfBeesPlayerA = 0;
       let numbersOfBeesPlayerB = 0;
       for (let collision of this.collisions) {

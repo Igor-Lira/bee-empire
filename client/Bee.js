@@ -51,8 +51,8 @@ class Bee {
 
   move(mouseX, mouseY) {
     if (!this.isMoving) return;
-    const targetX = mouseX - this.x;
-    const targetY = mouseY - this.y;
+    const targetX = mouseX - this.x - xOffset;
+    const targetY = mouseY - this.y - yOffset;
     const deg = Math.atan2(targetY, targetX);
     const dist = Math.hypot(targetX, targetY);
     let deltaX = 0.8 * Math.cos(deg);
@@ -95,7 +95,7 @@ class Bee {
     }
 
     // ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    // ctx.strokeRect(this.x + xOffset, this.y + yOffset, this.width, this.height);
 
     ctx.strokeStyle = _strokeStyle;
     ctx.fillStyle = _fillStyle;
@@ -109,7 +109,7 @@ class Bee {
     }
 
     const imgWidth = 25;
-    ctx.drawImage(img, this.x - imgWidth/2 , this.y- imgWidth/2);
+    ctx.drawImage(img, this.x - imgWidth/2 + xOffset, this.y- imgWidth/2 + yOffset);
   }
 
   dodgeOtherBees() {

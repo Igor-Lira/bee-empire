@@ -31,8 +31,8 @@ const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
 const rows = 3;
 const cols = 3;
-const xOffset = 201;
-const yOffset = 201;
+const xOffset = 200;
+const yOffset = 200;
 
 const myId = 1;
 

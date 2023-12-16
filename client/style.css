@@ -25,3 +25,29 @@
     opacity: 0;
   }
 }
+#mini-map {
+  width: 20vw;
+  height: 20vh;
+  position: fixed;
+  left: 78%;
+  top: 75%;
+  background: #f0f0f0;
+  opacity: 0.8;
+  border: 10px solid green;
+}
+
+#outer-borders {
+  position: fixed;
+  left: 10%;
+  top: 10%;
+  width: 80%;
+  height: 80%;
+  border: 10px solid red;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}

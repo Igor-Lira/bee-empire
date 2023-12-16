@@ -6,17 +6,21 @@ class World {
   honeycomb = null;
   bees = [];
   players = {};
+  controller;
 
   constructor() {
     this.x = 0;
     this.y = 0;
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.width = cols * 2 * hexWidth;
+    this.height = rows * 1.5 * hexHeight;
+    MAX_OFFSET_X_INF = -this.width + window.innerWidth - 200;
+    MAX_OFFSET_Y_INF = -this.height + window.innerHeight - 200;
     this.honeycomb = new Honeycomb();
+    this.controller = new WorldController();
   }
 
   loop() {
-    ctx.clearRect(this.x, this.y, this.width, this.height);
+    this.controller.scroll();
     this.drawEntities();
     requestAnimFrame(() => this.loop(this));
   }
@@ -49,6 +53,9 @@ class World {
   }
 
   drawEntities() {
+    ctx.clearRect(this.x, this.y, this.width, this.height);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     this.honeycomb.draw();
     this.honeycomb.drawFights();
     this.honeycomb.drawMyWalls();

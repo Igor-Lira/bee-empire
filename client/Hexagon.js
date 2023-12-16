@@ -58,7 +58,7 @@ class Hexagon {
     const _fillStyle = ctx.fillStyle;
     const _lineWidth = ctx.lineWidth;
     ctx.beginPath();
-    ctx.ellipse(this.x, this.y, this.size, this.size,  Math.PI / 180, 0, 2 * Math.PI);
+    ctx.ellipse(this.x + xOffset, this.y + yOffset, this.size, this.size,  Math.PI / 180, 0, 2 * Math.PI);
     ctx.fillStyle = '#E6CC47';
     ctx.lineWidth = 5;
     ctx.fill();

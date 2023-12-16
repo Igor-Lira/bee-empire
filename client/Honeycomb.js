@@ -39,8 +39,8 @@ class Honeycomb {
         const _strokeStyle = ctx.strokeStyle;
         const _lineWidth = ctx.lineWidth;
         ctx.beginPath();
-        ctx.moveTo(wall.boundary.x1, wall.boundary.y1);
-        ctx.lineTo(wall.boundary.x2, wall.boundary.y2);
+        ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
+        ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
         const fightColorsStyle = ['red', 'violet'];
         ctx.lineWidth = 5;
         ctx.strokeStyle = fightColorsStyle[fightColorsStyle.length * Math.random() | 0];
@@ -57,8 +57,8 @@ class Honeycomb {
       if (this.hexagons[wall.hexagon]?.owner === myId && this.hexagons[wall.hexagonBorder]?.owner === myId) {
         const _strokeStyle = ctx.strokeStyle;
         const _lineWidth = ctx.lineWidth;
-        ctx.moveTo(wall.boundary.x1, wall.boundary.y1);
-        ctx.lineTo(wall.boundary.x2, wall.boundary.y2);
+        ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
+        ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
         ctx.strokeStyle = '#f0e68c';
         ctx.lineWidth = 5;
         ctx.stroke();

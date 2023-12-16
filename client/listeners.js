@@ -2,6 +2,7 @@ let isDragging = false;
 let startMouseX, startMouseY;
 
 document.addEventListener("mousedown", (event) => {
+  world.controller.onMouseClick(event);
   if (event.button !== 0) return;
   isDragging = true;
   startMouseX = event.clientX;
@@ -15,10 +16,18 @@ document.addEventListener("mousedown", (event) => {
   world.bees.map((bee) => (bee.selected = false));
 });
 
+
+document.addEventListener("mouseout", e => {
+  if (e.toElement == null && e.relatedTarget == null) {
+    isMouseInOuterBorder = false;
+  }
+})
+
 document.addEventListener("mousemove", (e) => {
   isMouseover = true;
   cursor.x = e.clientX;
   cursor.y = e.clientY;
+  world.controller.onMouseMove(event);
   if (!isDragging) return;
   let boxWidth = cursor.x - startMouseX;
   let boxHeight = cursor.y - startMouseY;
@@ -35,8 +44,8 @@ document.addEventListener("mousemove", (e) => {
 
   for (let beeId in world.bees) {
     world.bees[beeId].isInsideSelectionBox({
-      offsetLeft: selectionBox.offsetLeft,
-      offsetTop: selectionBox.offsetTop,
+      offsetLeft: selectionBox.offsetLeft - xOffset,
+      offsetTop: selectionBox.offsetTop - yOffset,
       width: Math.abs(boxWidth),
       height: Math.abs(boxHeight),
     });
