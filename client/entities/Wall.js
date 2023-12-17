@@ -8,6 +8,7 @@ class Wall {
   collisions = [];
   hexagon;
   hexagonBorder;
+  isExternalBorder;
   isOnFight;
   fight = {
     playerA: 0,
@@ -19,6 +20,7 @@ class Wall {
     this.y = y;
     this.hexagon = row.toString() + col.toString();
     this.geometry(type, x, y, row, col, size);
+    this.isExternalBorder = this.hexagonBorder === null;
   }
 
   geometry(type, x, y, row, col, size) {
@@ -37,7 +39,11 @@ class Wall {
           this.hexagonBorder = (row+1).toString() + (col+1).toString();
         }
 
-        if (row === rows -1 ) {
+        if (row === rows - 1) {
+          this.hexagonBorder = null;
+        }
+
+        if (col === cols - 1 && row % 2 === 1) {
           this.hexagonBorder = null;
         }
 
@@ -58,6 +64,10 @@ class Wall {
           this.hexagonBorder = null;
         }
         if (row === rows -1 && col === cols -1) {
+          this.hexagonBorder = null;
+        }
+
+        if (col === cols -1) {
           this.hexagonBorder = null;
         }
 
@@ -84,6 +94,11 @@ class Wall {
         if (row === 0 && col === cols -1) {
           this.hexagonBorder = null;
         }
+
+        if (col === cols - 1 && row % 2 === 1) {
+          this.hexagonBorder = null;
+        }
+
         this.id = this.hexagon + 'L3';
         break;
       }
@@ -104,9 +119,7 @@ class Wall {
         if (row === 0) {
           this.hexagonBorder = null;
         }
-
-
-        if (row === rows -1 && col === 0) {
+        if (row % 2 === 0 && col === 0) {
           this.hexagonBorder = null;
         }
 
@@ -127,6 +140,9 @@ class Wall {
           this.hexagonBorder = null;
         }
         if (row === rows -1 && col === 0) {
+          this.hexagonBorder = null;
+        }
+        if (col === 0) {
           this.hexagonBorder = null;
         }
         this.direction = { i: 1, j: 0 };
@@ -150,6 +166,9 @@ class Wall {
           this.hexagonBorder = null;
         }
         if (row === 0 && col === 0) {
+          this.hexagonBorder = null;
+        }
+        if (col === 0 && row % 2 === 0) {
           this.hexagonBorder = null;
         }
         this.direction = { i: 1, j: 1 };
@@ -194,6 +213,7 @@ class Wall {
 
   // TODO: This method should be in world Controller
   computeFightResult() {
+    if (this.isExternalBorder) { return; }
     if (this.collisions.length > 0) {
       let numberOfBeesPlayerA = 0;
       let numbersOfBeesPlayerB = 0;
