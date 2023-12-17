@@ -7,7 +7,7 @@ class Bee {
   height;
   selected;
   moving;
-  trajectory = { interval: null, xOffset: null, yOffset: null };
+  trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null };
   beeCollisions;
 
   constructor(player, id) {
@@ -47,27 +47,25 @@ class Bee {
 
       this.trajectory.xOffest = xOffset;
       this.trajectory.yOffset = yOffset;
+      this.trajectory.xTarget = event.pageX;
+      this.trajectory.yTarget = event.pageY;
 
-      this.move(event.pageX, event.pageY);
+      this.move();
     }
   }
 
   move(mouseX, mouseY) {
     if (!this.isMoving) return;
-    const targetX = mouseX - this.x - this.trajectory.xOffest;
-    const targetY = mouseY - this.y - this.trajectory.yOffset;
+    const targetX = this.trajectory.xTarget - this.x - this.trajectory.xOffest;
+    const targetY = this.trajectory.yTarget - this.y - this.trajectory.yOffset;
     const deg = Math.atan2(targetY, targetX);
     const dist = Math.hypot(targetX, targetY);
     let deltaX = 0.8 * Math.cos(deg);
     let deltaY = 0.8 * Math.sin(deg);
 
     const wallCollision = this.checkForWallCollision();
-    if (wallCollision) {
-        this.x += deltaX;
-        this.y += deltaY;
-    } else {
+    if (!(wallCollision && this.trajectoryCrossWall(wallCollision))) {
       this.dodgeOtherBees();
-
       if (!isNaN(deltaX)) {
         this.x += deltaX;
       }
@@ -76,7 +74,7 @@ class Bee {
       }
       if (dist > 1) {
         this.trajectory.interval = setTimeout(() => {
-          this.move(mouseX, mouseY);
+          this.move();
         }, 10);
       }
     }
@@ -147,6 +145,14 @@ class Bee {
     }
   }
 
+  trajectoryCrossWall(wall) {
+    return lineIntersectsLine(
+        { x: wall.boundary.x1, y: wall.boundary.y1 },
+        { x: wall.boundary.x2, y: wall.boundary.y2 },
+        { x: this.trajectory.xTarget - xOffset, y: this.trajectory.yTarget - yOffset },
+        { x: this.x, y: this.y }
+    )
+  }
   checkForWallCollision() {
     let wallCollision = false;
     world.honeycomb.forEachWall((wall) => {
@@ -154,7 +160,7 @@ class Bee {
           (wall.collisions.includes(this.id) && wall.owner !== myId) ||
           (wall.collisions.includes(this.id) && wall.isExternalBorder)
       ) {
-        wallCollision = true;
+        wallCollision = wall;
       }
     });
     return wallCollision;
