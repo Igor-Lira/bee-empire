@@ -136,14 +136,12 @@ class WorldController {
         yOffset -= topRef*10;
       }
     }
-
     if (xOffset < MAX_OFFSET_X_INF) {
       xOffset = MAX_OFFSET_X_INF;
     }
     if (yOffset < MAX_OFFSET_Y_INF) {
       yOffset = MAX_OFFSET_Y_INF;
     }
-
     if (xOffset > MAX_OFFSET_X_SUP) {
       xOffset = MAX_OFFSET_X_SUP;
     }

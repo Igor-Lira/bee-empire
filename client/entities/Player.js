@@ -8,9 +8,8 @@ class Player {
     this.hexagons = {};
   }
 
-  randomConqueredHexagon() {
+  getRandomConqueredHexagon() {
     const hexagons = this.hexagons;
-    console.log(hexagons);
     let keys = Object.keys(hexagons);
     return hexagons[keys[ keys.length * Math.random() << 0]];
   }

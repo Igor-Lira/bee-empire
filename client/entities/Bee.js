@@ -11,7 +11,7 @@ class Bee {
   beeCollisions;
 
   constructor(player, id) {
-    const hexId = world.players[player].randomConqueredHexagon();
+    const hexId = world.players[player].getRandomConqueredHexagon();
     this.x = world.honeycomb.hexagons[hexId].x;
     this.y = world.honeycomb.hexagons[hexId].y;
     this.width = 30;

@@ -1,11 +1,15 @@
-const canvas = document.getElementById('canvas');
+const canvas = document.getElementById('content');
 let selectionBox = document.getElementById('selection-box');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 ctx.font = "48px serif";
 
-let id = 0;
+let MAX_OFFSET_X_INF = -1800;
+let MAX_OFFSET_Y_INF = -1900;
+
+let MAX_OFFSET_X_SUP = 200;
+let MAX_OFFSET_Y_SUP = 200;
 
 const cursor = {
   x : 0,
@@ -29,13 +33,9 @@ window.requestAnimFrame = (function () {
 const hexSize = 100;
 const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
-const rows = 3;
-const cols = 3;
-const xOffset = 200;
-const yOffset = 200;
+const rows = 10;
+const cols = 10;
+let xOffset = 0;
+let yOffset = 0;
 
 const myId = 1;
-
-function log(type, message) {
-  console.log('[' + type + ']:' + message)
-}

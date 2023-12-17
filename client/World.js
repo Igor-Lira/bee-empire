@@ -42,6 +42,8 @@ class World {
     const hexagon = this.randomHexagon();
     player.hexagons[hexagon.id] = hexagon.id;
     hexagon.conquer(player.id);
+    xOffset = -hexagon.x + window.innerWidth/2;
+    yOffset = -hexagon.y + window.innerHeight/2;
     return player.id;
   }
 
