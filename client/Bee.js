@@ -7,7 +7,7 @@ class Bee {
   height;
   selected;
   moving;
-  trajectory;
+  trajectory = { interval: null, xOffset: null, yOffset: null };
   beeCollisions;
 
   constructor(player, id) {
@@ -41,9 +41,12 @@ class Bee {
     if (this.selected) {
       this.isMoving = true;
 
-      if (this.trajectory) {
-        clearInterval(this.trajectory);
+      if (this.trajectory?.interval) {
+        clearInterval(this.trajectory.interval);
       }
+
+      this.trajectory.xOffest = xOffset;
+      this.trajectory.yOffset = yOffset;
 
       this.move(event.pageX, event.pageY);
     }
@@ -51,8 +54,8 @@ class Bee {
 
   move(mouseX, mouseY) {
     if (!this.isMoving) return;
-    const targetX = mouseX - this.x - xOffset;
-    const targetY = mouseY - this.y - yOffset;
+    const targetX = mouseX - this.x - this.trajectory.xOffest;
+    const targetY = mouseY - this.y - this.trajectory.yOffset;
     const deg = Math.atan2(targetY, targetX);
     const dist = Math.hypot(targetX, targetY);
     let deltaX = 0.8 * Math.cos(deg);
@@ -72,7 +75,7 @@ class Bee {
         this.y += deltaY;
       }
       if (dist > 1) {
-        this.trajectory = setTimeout(() => {
+        this.trajectory.interval = setTimeout(() => {
           this.move(mouseX, mouseY);
         }, 10);
       }
