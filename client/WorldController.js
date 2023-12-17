@@ -4,6 +4,11 @@ class WorldController {
   isMouseOnMiniMap = false;
   outerBorders;
   isMouseInOuterBorder = false;
+  isDragging = false;
+  startMouseX;
+  startMouseY;
+  boxWidth;
+  boxHeight;
 
   constructor() {
     this.miniMapSetup();
@@ -28,12 +33,50 @@ class WorldController {
   }
 
   onMouseMove(event) {
+    isMouseover = true;
+    cursor.x = event.clientX;
+    cursor.y = event.clientY;
     this.checkForScroll(event);
-    this.checkMinimap(event);
+    this.checkIfMouseIsOnMinimap(event);
+    this.updateSelectionBox();
+    this.lookForEntitiesInsideSelectionBox();
+  }
+
+  onMouseUp(event) {
+    this.isDragging = false;
+    isMouseover = false;
+    selectionBox.style.display = "none";
   }
 
   onMouseClick() {
     this.isMiniMapFocused = this.isMouseOnMiniMap;
+    if (event.button !== 0) return;
+    this.isDragging = true;
+    this.startMouseX = event.clientX;
+    this.startMouseY = event.clientY;
+    selectionBox.style.display = "block";
+    selectionBox.style.left = this.startMouseX + "px";
+    selectionBox.style.top = this.startMouseY + "px";
+    selectionBox.style.width = "0px";
+    selectionBox.style.height = "0px";
+    world.bees.map((bee) => (bee.selected = false));
+  }
+
+  onMouseRightClick(event) {
+    event.preventDefault();
+    this.rightClickAnimation(event);
+    for (let beeId in world.bees) {
+      world.bees[beeId].onRightClick(event);
+    }
+  }
+
+  rightClickAnimation(event) {
+    const myDiv = document.createElement("div");
+    myDiv.classList.add("right-click-animation");
+    myDiv.style.left = event.pageX - 20 + "px";
+    myDiv.style.top = event.pageY - 20 + "px";
+    const placeholderClick = document.getElementById("right-click");
+    placeholderClick.appendChild(myDiv);
   }
 
   checkForScroll() {
@@ -47,7 +90,33 @@ class WorldController {
     );
   }
 
-  checkMinimap() {
+  updateSelectionBox() {
+    if (!this.isDragging) return;
+    this.boxWidth = cursor.x - this.startMouseX;
+    this.boxHeight = cursor.y - this.startMouseY;
+    selectionBox.style.width = Math.abs(this.boxWidth) + "px";
+    selectionBox.style.height = Math.abs(this.boxHeight) + "px";
+    if (this.boxWidth < 0) {
+      selectionBox.style.left = cursor.x + "px";
+    }
+
+    if (this.boxHeight < 0) {
+      selectionBox.style.top = cursor.y + "px";
+    }
+  }
+
+  lookForEntitiesInsideSelectionBox() {
+    for (let beeId in world.bees) {
+      world.bees[beeId].isInsideSelectionBox({
+        offsetLeft: selectionBox.offsetLeft - xOffset,
+        offsetTop: selectionBox.offsetTop - yOffset,
+        width: Math.abs(this.boxWidth),
+        height: Math.abs(this.boxHeight),
+      });
+    }
+  }
+
+  checkIfMouseIsOnMinimap() {
     this.isMouseOnMiniMap = isPointInsideSelectionBox(
       cursor.x,
       cursor.y,
