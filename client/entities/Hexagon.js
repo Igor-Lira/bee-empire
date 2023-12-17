@@ -4,7 +4,7 @@ class Hexagon {
   y;
   size;
   walls = {};
-  owner;
+  owner = 2;
 
   constructor(x, y, row, col, hexSize) {
     this.id = row.toString() + col.toString();
@@ -48,6 +48,16 @@ class Hexagon {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
+    /** DEBUG: this will draw wall masks **/
+    // ctx.beginPath();
+    // ctx.lineWidth = 5;
+    // ctx.strokeStyle = 'green';
+    // // for (let id in this.walls) {
+    // //   this.walls[id].createMaskForCollision();
+    // // }
+    // ctx.closePath();
+    // ctx.stroke();
 
     ctx.fillStyle = _fillStyle;
     ctx.lineWidth = _lineWidth;

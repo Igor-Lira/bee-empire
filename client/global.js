@@ -33,8 +33,8 @@ window.requestAnimFrame = (function () {
 const hexSize = 100;
 const hexHeight = hexSize * Math.sqrt(3);
 const hexWidth = hexSize * 1.5;
-const rows = 10;
-const cols = 10;
+const rows = 5;
+const cols = 5;
 let xOffset = 0;
 let yOffset = 0;
 
