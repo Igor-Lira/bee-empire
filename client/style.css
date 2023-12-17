@@ -44,6 +44,10 @@
   height: 80%;
 }
 
+#container {
+  background: radial-gradient(yellow, transparent)
+}
+
 body {
   margin: 0;
   padding: 0;

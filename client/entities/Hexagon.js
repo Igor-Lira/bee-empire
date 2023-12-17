@@ -40,8 +40,8 @@ class Hexagon {
     if (this.owner === myId) {
       ctx.fillStyle = '#e3ff00';
     }
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#E6CC47';
     for (let id in this.walls) {
       this.walls[id].draw();
     }
@@ -69,7 +69,10 @@ class Hexagon {
     const _lineWidth = ctx.lineWidth;
     ctx.beginPath();
     ctx.ellipse(this.x + xOffset, this.y + yOffset, this.size, this.size,  Math.PI / 180, 0, 2 * Math.PI);
-    ctx.fillStyle = '#E6CC47';
+    const grd = ctx.createRadialGradient(this.x + xOffset, this.y +yOffset, 0, this.x + xOffset, this.y + yOffset,  this.size);
+    grd.addColorStop(0, "yellow");
+    grd.addColorStop(1, "#E6CC47");
+    ctx.fillStyle = grd;
     ctx.lineWidth = 5;
     ctx.fill();
     ctx.closePath();
