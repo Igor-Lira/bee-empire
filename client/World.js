@@ -26,7 +26,7 @@ class World {
   }
 
   checkFightLoop() {
-    setInterval(() => this.checkFights(this), 10);
+    setInterval(() => this.checkFights(this), 50);
   }
 
   checkFights() {

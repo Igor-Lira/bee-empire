@@ -7,7 +7,7 @@ class Bee {
   height;
   selected;
   moving;
-  trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null };
+  trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null, fixedX: null, fixedY: null };
   beeCollisions;
 
   constructor(player, id) {
@@ -49,12 +49,25 @@ class Bee {
       this.trajectory.yOffset = yOffset;
       this.trajectory.xTarget = event.pageX;
       this.trajectory.yTarget = event.pageY;
+      this.trajectory.fixedX = event.pageX - xOffset;
+      this.trajectory.fixedY = event.pageY - yOffset;
 
-      this.move();
+      const walls = this.checkForWallCollision();
+      let pathCrossWall = false;
+      if (walls?.length) {
+        walls.forEach((wall) => {
+          if (this.pathCrossWall(wall)) {
+            pathCrossWall = true;
+          }
+        })
+      }
+      if (walls.length === 0 || (walls.length && !pathCrossWall)) {
+        this.move();
+      }
     }
   }
 
-  move(mouseX, mouseY) {
+  move() {
     if (!this.isMoving) return;
     const targetX = this.trajectory.xTarget - this.x - this.trajectory.xOffest;
     const targetY = this.trajectory.yTarget - this.y - this.trajectory.yOffset;
@@ -63,8 +76,16 @@ class Bee {
     let deltaX = 0.8 * Math.cos(deg);
     let deltaY = 0.8 * Math.sin(deg);
 
-    const wallCollision = this.checkForWallCollision();
-    if (!(wallCollision && this.trajectoryCrossWall(wallCollision))) {
+    let walls = this.checkForWallCollision();
+    let pathCrossWall = false;
+    if (walls?.length) {
+      walls.forEach((wall) => {
+        if (this.pathCrossWall(wall)) {
+          pathCrossWall = true;
+        }
+      })
+    }
+    if (walls.length === 0 || (walls.length && !pathCrossWall)) {
       this.dodgeOtherBees();
       if (!isNaN(deltaX)) {
         this.x += deltaX;
@@ -75,7 +96,9 @@ class Bee {
       if (dist > 1) {
         this.trajectory.interval = setTimeout(() => {
           this.move();
-        }, 10);
+        }, 1);
+      } else {
+        clearTimeout(this.trajectory.interval);
       }
     }
   }
@@ -95,8 +118,21 @@ class Bee {
       ctx.lineWidth = 1;
     }
 
-    // ctx.fillRect(this.x, this.y, this.width, this.height);
-    // ctx.strokeRect(this.x + xOffset, this.y + yOffset, this.width, this.height);
+
+    if (this.trajectory?.xTarget && this.trajectory?.yTarget) {
+      ctx.beginPath();
+      ctx.setLineDash([5, 15]);
+      ctx.moveTo(this.x + xOffset, this.y + yOffset);
+      ctx.lineTo(this.trajectory.fixedX + xOffset, this.trajectory.fixedY + yOffset);
+      ctx.strokeStyle = 'black';
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 1;
+      /** display fixed **/
+      ctx.fillRect(this.trajectory.fixedX + xOffset, this.trajectory.fixedY + yOffset, 10, 10);
+      ctx.fill();
+      ctx.stroke();
+      ctx.closePath();
+    }
 
     ctx.strokeStyle = _strokeStyle;
     ctx.fillStyle = _fillStyle;
@@ -145,22 +181,38 @@ class Bee {
     }
   }
 
-  trajectoryCrossWall(wall) {
-    return lineIntersectsLine(
-        { x: wall.boundary.x1, y: wall.boundary.y1 },
-        { x: wall.boundary.x2, y: wall.boundary.y2 },
-        { x: this.trajectory.xTarget - xOffset, y: this.trajectory.yTarget - yOffset },
-        { x: this.x, y: this.y }
+  pathCrossWall(wall) {
+    const result =  intersectPointFor2Lines(
+      wall.boundary.x1 + xOffset,
+      wall.boundary.y1 + yOffset,
+      wall.boundary.x2 + xOffset,
+      wall.boundary.y2 + yOffset,
+      this.trajectory.fixedX + xOffset,
+      this.trajectory.fixedY + yOffset,
+      this.x + xOffset,
+      this.y + yOffset,
     )
+    return result;
   }
   checkForWallCollision() {
-    let wallCollision = false;
+    let wallCollision = [];
+    const WALL_OFFSET = 10;
     world.honeycomb.forEachWall((wall) => {
+      const intersectsUpperOffset = lineIntersectsRect(
+        {x: wall.boundary.x1 + WALL_OFFSET*wall.direction.i, y: wall.boundary.y1 + WALL_OFFSET*wall.direction.j},
+        {x: wall.boundary.x2 + WALL_OFFSET*wall.direction.i, y: wall.boundary.y2 + WALL_OFFSET*wall.direction.j},
+        this
+      );
+      const intersectsLowerOffset =         lineIntersectsRect(
+        {x: wall.boundary.x1 - WALL_OFFSET*wall.direction.i, y: wall.boundary.y1 - WALL_OFFSET*wall.direction.j},
+        {x: wall.boundary.x2 - WALL_OFFSET*wall.direction.i, y: wall.boundary.y2 - WALL_OFFSET*wall.direction.j},
+        this);
+
       if (
-          (wall.collisions.includes(this.id) && wall.owner !== myId) ||
-          (wall.collisions.includes(this.id) && wall.isExternalBorder)
+        ((intersectsUpperOffset || intersectsLowerOffset) && wall.owner !== myId) ||
+        ((intersectsUpperOffset || intersectsLowerOffset) && wall.isExternalBorder)
       ) {
-        wallCollision = wall;
+        wallCollision.push(wall);
       }
     });
     return wallCollision;
