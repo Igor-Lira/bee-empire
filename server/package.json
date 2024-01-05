@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm run fix && npm run lint && npx tsc && node build/server.js",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.2",
+    "@types/ws": "^8.5.10",
+    "gts": "^5.2.0",
+    "typescript": "~5.2.0"
+  }
+}
