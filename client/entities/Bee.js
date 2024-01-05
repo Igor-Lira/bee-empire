@@ -6,21 +6,22 @@ class Bee {
   width;
   height;
   selected;
-  moving;
+  isMoving;
   trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null, fixedX: null, fixedY: null };
   beeCollisions;
 
   constructor(player, id) {
     const hexId = world.players[player].getRandomConqueredHexagon();
     this.x = world.honeycomb.hexagons[hexId].x;
-    this.y = world.honeycomb.hexagons[hexId].y;
+    this.y = world.honeycomb.hexagons[hexId].y
     this.width = 30;
     this.height = 30;
     this.id = id;
     this.player = player;
     this.selected = false;
-    this.moving = false;
+    this.isMoving = false;
     this.beeCollisions = [];
+    this.generateRandomPosition(hexId);
   }
 
   isInsideSelectionBox(selectionBox) {
@@ -34,6 +35,33 @@ class Bee {
     );
     if (isInside) {
       this.selected = true;
+    }
+  }
+
+  generateRandomPosition(hexId) {
+    let allowed = true;
+    for (let beeId in world.bees) {
+      if (Number(beeId) !== this.id) {
+        let bee = world.bees[beeId];
+        const intersect = getIntersection(this, bee);
+        if (intersect) {
+          allowed = false;
+        }
+      }
+    }
+    if (!allowed) {
+      if (Math.random() > 0.5) {
+        console.log(150*Math.random())
+        this.x = world.honeycomb.hexagons[hexId].x + 50*Math.random();
+      } else {
+        this.x = world.honeycomb.hexagons[hexId].x - 50*Math.random();
+      }
+      if (Math.random() > 0.5) {
+        this.y = world.honeycomb.hexagons[hexId].y + 50*Math.random();
+      } else {
+        this.y = world.honeycomb.hexagons[hexId].y - 50*Math.random();
+      }
+      this.generateRandomPosition(hexId);
     }
   }
 
@@ -53,15 +81,7 @@ class Bee {
       this.trajectory.fixedY = event.pageY - yOffset;
 
       const walls = this.checkForWallCollision();
-      let pathCrossWall = false;
-      if (walls?.length) {
-        walls.forEach((wall) => {
-          if (this.pathCrossWall(wall)) {
-            pathCrossWall = true;
-          }
-        })
-      }
-      if (walls.length === 0 || (walls.length && !pathCrossWall)) {
+      if (walls.length === 0) {
         this.move();
       }
     }
@@ -77,15 +97,7 @@ class Bee {
     let deltaY = 0.8 * Math.sin(deg);
 
     let walls = this.checkForWallCollision();
-    let pathCrossWall = false;
-    if (walls?.length) {
-      walls.forEach((wall) => {
-        if (this.pathCrossWall(wall)) {
-          pathCrossWall = true;
-        }
-      })
-    }
-    if (walls.length === 0 || (walls.length && !pathCrossWall)) {
+    if (walls.length === 0) {
       this.dodgeOtherBees();
       if (!isNaN(deltaX)) {
         this.x += deltaX;
@@ -93,12 +105,13 @@ class Bee {
       if (!isNaN(deltaY)) {
         this.y += deltaY;
       }
-      if (dist > 1) {
+      if (dist > 5) {
         this.trajectory.interval = setTimeout(() => {
           this.move();
         }, 1);
       } else {
         clearTimeout(this.trajectory.interval);
+        this.isMoving = false;
       }
     }
   }
@@ -158,19 +171,22 @@ class Bee {
           if (!this.beeCollisions.includes(beeId)) {
             this.beeCollisions.push(beeId);
           }
-          if (intersect.pushX < intersect.pushY) {
-            if (intersect.dirX < 0) {
-              this.x -= bee.width * 0.2;
-            } else if (intersect.dirX > 0) {
-              this.x += bee.width * 0.2;
+            if (intersect.pushX < intersect.pushY) {
+              if (intersect.dirX < 0) {
+                this.x -= bee.width * 0.2;
+              } else if (intersect.dirX > 0) {
+                this.x += bee.width * 0.2;
+              }
+            } else {
+              if (intersect.dirY < 0) {
+                this.y -= bee.height * 0.2;
+              } else if (intersect.dirY > 0) {
+                this.y += bee.height * 0.2;
+              }
             }
-          } else {
-            if (intersect.dirY < 0) {
-              this.y -= bee.height * 0.2;
-            } else if (intersect.dirY > 0) {
-              this.y += bee.height * 0.2;
+            if (!bee.isMoving) {
+              this.isMoving = false;
             }
-          }
         } else {
           const beeIndex = this.beeCollisions.findIndex((c) => c === beeId);
           if (beeIndex > -1) {
