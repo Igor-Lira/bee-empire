@@ -7,6 +7,7 @@ class Bee {
   height;
   selected;
   isMoving;
+  lockSideEffects;
   trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null, fixedX: null, fixedY: null };
   beeCollisions;
 
@@ -80,10 +81,23 @@ class Bee {
       this.trajectory.fixedY = event.pageY - yOffset;
 
       const walls = this.checkForWallCollision();
-      if (walls.length === 0) {
+      const pathCrossWall = this.checkIfTrajectoryCrossWall(walls);
+      if (walls.length === 0 || (walls.length && !pathCrossWall)) {
         this.move();
       }
     }
+  }
+
+  checkIfTrajectoryCrossWall(walls) {
+    let pathCrossWall = false;
+    if (walls?.length) {
+      walls.forEach((wall) => {
+        if (this.pathCrossWall(wall)) {
+          pathCrossWall = true;
+        }
+      })
+    }
+    return pathCrossWall;
   }
 
   move() {
@@ -96,15 +110,11 @@ class Bee {
     let deltaY = 0.8 * Math.sin(deg);
 
     const walls = this.checkForWallCollision();
-    let pathCrossWall = false;
-    if (walls?.length) {
-      walls.forEach((wall) => {
-        if (this.pathCrossWall(wall)) {
-          pathCrossWall = true;
-        }
-      })
-    }
+    const pathCrossWall = this.checkIfTrajectoryCrossWall(walls);
+
     if (walls.length === 0 || (walls.length && !pathCrossWall)) {
+      /** If collision with wall exists, don't create side moves because bee can cross wall **/
+      this.lockSideEffects = walls.length !== 0;
       this.dodgeOtherBees(dist);
       if (!isNaN(deltaX)) {
         this.x += deltaX;
@@ -203,7 +213,7 @@ class Bee {
     }
     const diffOnDestination = this.calculateDistFromBeesDestinations(bee);
     const bothHaveSameDestination = diffOnDestination < 5;
-    if (this.checkIfNeedToPushBeeAwayFromCollision(bothHaveSameDestination, dist)) {
+    if (this.checkIfNeedToPushBeeAwayFromCollision(bothHaveSameDestination, dist) && !this.lockSideEffects) {
       this.bounceBeeFromCollision(intersect, bee);
     }
     this.stopMovingIfAnotherBeeIsOnDestination(bee, bothHaveSameDestination);
