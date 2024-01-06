@@ -4,6 +4,7 @@ class World {
   width;
   height;
   honeycomb = null;
+  data = { bees: [] };
   bees = [];
   players = {};
   controller;
@@ -21,7 +22,7 @@ class World {
 
   loop() {
     this.controller.scroll();
-    this.drawEntities();
+    // this.drawEntities();
     requestAnimFrame(() => this.loop(this));
   }
 
@@ -31,8 +32,6 @@ class World {
 
   checkFights() {
     this.honeycomb.forEachWall((wall) => {
-      wall.checkBeesCollisions();
-      wall.computeFightResult();
     });
   }
 
@@ -55,11 +54,10 @@ class World {
   }
 
   drawEntities() {
-    ctx.clearRect(this.x, this.y, this.width, this.height);
+    // ctx.clearRect(this.x, this.y, this.width, this.height);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     this.honeycomb.draw();
-    this.honeycomb.drawFights();
     this.honeycomb.drawMyWalls();
     for (let beeId in this.bees) {
       this.bees[beeId].draw();

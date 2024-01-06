@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npm run fix && npm run lint && npx tsc && node build/server.js",
+    "start": "npx tsc && node build/server.js",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -13,11 +13,16 @@
     "pretest": "npm run compile",
     "posttest": "npm run lint"
   },
+  "_moduleAliases": {
+    "@entities": "build/entities",
+    "@lib": "build/lib",
+    "@typing": "build/types"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ts-node": "^10.9.2",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "module-alias": "^2.2.3"
   },
   "devDependencies": {
     "@types/node": "20.8.2",

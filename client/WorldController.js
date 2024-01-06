@@ -59,7 +59,13 @@ class WorldController {
     selectionBox.style.top = this.startMouseY + "px";
     selectionBox.style.width = "0px";
     selectionBox.style.height = "0px";
-    world.bees.map((bee) => (bee.selected = false));
+    for (const beeId in world.bees) {
+      const bee = world.bees[beeId];
+      if (bee.mine) {
+        bee.selected = false;
+      }
+    }
+    // world.bees.map((bee) => (bee.selected = false));
   }
 
   onMouseRightClick(event) {
@@ -107,12 +113,14 @@ class WorldController {
 
   lookForEntitiesInsideSelectionBox() {
     for (let beeId in world.bees) {
-      world.bees[beeId].isInsideSelectionBox({
-        offsetLeft: selectionBox.offsetLeft - xOffset,
-        offsetTop: selectionBox.offsetTop - yOffset,
-        width: Math.abs(this.boxWidth),
-        height: Math.abs(this.boxHeight),
-      });
+      if (world.bees[beeId].mine) {
+        world.bees[beeId].isInsideSelectionBox({
+          offsetLeft: selectionBox.offsetLeft - xOffset,
+          offsetTop: selectionBox.offsetTop - yOffset,
+          width: Math.abs(this.boxWidth),
+          height: Math.abs(this.boxHeight),
+        });
+      }
     }
   }
 

@@ -10,11 +10,9 @@ class Bee {
   lockSideEffects;
   trajectory = { interval: null, xOffset: null, yOffset: null, xTarget: null, yTarget: null, fixedX: null, fixedY: null };
   beeCollisions;
+  mine = false;
 
   constructor(player, id) {
-    const hexId = world.players[player].getRandomConqueredHexagon();
-    this.x = world.honeycomb.hexagons[hexId].x;
-    this.y = world.honeycomb.hexagons[hexId].y
     this.width = 30;
     this.height = 30;
     this.id = id;
@@ -22,7 +20,6 @@ class Bee {
     this.selected = false;
     this.isMoving = false;
     this.beeCollisions = [];
-    this.generateRandomPosition(hexId);
   }
 
   isInsideSelectionBox(selectionBox) {
@@ -39,65 +36,25 @@ class Bee {
     }
   }
 
-  generateRandomPosition(hexId) {
-    let allowed = true;
-    for (let beeId in world.bees) {
-      if (Number(beeId) !== this.id) {
-        let bee = world.bees[beeId];
-        const intersect = getIntersection(this, bee);
-        if (intersect) {
-          allowed = false;
-        }
-      }
-    }
-    if (!allowed) {
-      if (Math.random() > 0.5) {
-        this.x = world.honeycomb.hexagons[hexId].x + 50*Math.random();
-      } else {
-        this.x = world.honeycomb.hexagons[hexId].x - 50*Math.random();
-      }
-      if (Math.random() > 0.5) {
-        this.y = world.honeycomb.hexagons[hexId].y + 50*Math.random();
-      } else {
-        this.y = world.honeycomb.hexagons[hexId].y - 50*Math.random();
-      }
-      this.generateRandomPosition(hexId);
-    }
-  }
 
   onRightClick(event) {
     if (this.selected) {
-      this.isMoving = true;
-
-      if (this.trajectory?.interval) {
-        clearInterval(this.trajectory.interval);
-      }
-
       this.trajectory.xOffest = xOffset;
       this.trajectory.yOffset = yOffset;
       this.trajectory.xTarget = event.pageX;
       this.trajectory.yTarget = event.pageY;
       this.trajectory.fixedX = event.pageX - xOffset;
       this.trajectory.fixedY = event.pageY - yOffset;
-
-      const walls = this.checkForWallCollision();
-      const pathCrossWall = this.checkIfTrajectoryCrossWall(walls);
-      if (walls.length === 0 || (walls.length && !pathCrossWall)) {
-        this.move();
-      }
-    }
-  }
-
-  checkIfTrajectoryCrossWall(walls) {
-    let pathCrossWall = false;
-    if (walls?.length) {
-      walls.forEach((wall) => {
-        if (this.pathCrossWall(wall)) {
-          pathCrossWall = true;
+      const rightClickData = {
+        event: 'bee-move',
+        bee: this.id,
+        target: {
+          x: event.pageX - xOffset,
+          y: event.pageY - yOffset,
         }
-      })
+      };
+      socket.send(JSON.stringify(rightClickData));
     }
-    return pathCrossWall;
   }
 
   move() {
@@ -139,7 +96,7 @@ class Bee {
     const _lineWidth = ctx.lineWidth;
     this.setColor();
     this.drawTrajectory();
-    this.drawBeeSpring();
+    this.drawBeeSprint();
     ctx.strokeStyle = _strokeStyle;
     ctx.fillStyle = _fillStyle;
     ctx.lineWidth = _lineWidth;
@@ -157,13 +114,19 @@ class Bee {
     }
   }
 
-  drawBeeSpring() {
+  drawBeeSprint() {
     const img = new Image();
-    if (this.selected) {
-      img.src = 'assets/bee-selected.png';
+
+    if (this.mine) {
+      if (this.selected) {
+        img.src = 'assets/bee-selected.png';
+      } else {
+        img.src = "assets/bee.png";
+      }
     } else {
-      img.src = "assets/bee.png";
+      img.src = 'assets/enemy-bee.png'
     }
+
 
     const imgWidth = 25;
     ctx.drawImage(img, this.x - imgWidth / 2 + xOffset, this.y - imgWidth / 2 + yOffset);
@@ -251,42 +214,5 @@ class Bee {
         this.y += bee.height * 0.2;
       }
     }
-  }
-
-  pathCrossWall(wall) {
-    const result =  intersectPointFor2Lines(
-      wall.boundary.x1 + xOffset,
-      wall.boundary.y1 + yOffset,
-      wall.boundary.x2 + xOffset,
-      wall.boundary.y2 + yOffset,
-      this.trajectory.fixedX + xOffset,
-      this.trajectory.fixedY + yOffset,
-      this.x + xOffset,
-      this.y + yOffset,
-    )
-    return result;
-  }
-  checkForWallCollision() {
-    let wallCollision = [];
-    const WALL_OFFSET = 10;
-    world.honeycomb.forEachWall((wall) => {
-      const intersectsUpperOffset = lineIntersectsRect(
-        {x: wall.boundary.x1 + WALL_OFFSET*wall.direction.i, y: wall.boundary.y1 + WALL_OFFSET*wall.direction.j},
-        {x: wall.boundary.x2 + WALL_OFFSET*wall.direction.i, y: wall.boundary.y2 + WALL_OFFSET*wall.direction.j},
-        this
-      );
-      const intersectsLowerOffset =         lineIntersectsRect(
-        {x: wall.boundary.x1 - WALL_OFFSET*wall.direction.i, y: wall.boundary.y1 - WALL_OFFSET*wall.direction.j},
-        {x: wall.boundary.x2 - WALL_OFFSET*wall.direction.i, y: wall.boundary.y2 - WALL_OFFSET*wall.direction.j},
-        this);
-
-      if (
-        ((intersectsUpperOffset || intersectsLowerOffset) && wall.owner !== myId) ||
-        ((intersectsUpperOffset || intersectsLowerOffset) && wall.isExternalBorder)
-      ) {
-        wallCollision.push(wall);
-      }
-    });
-    return wallCollision;
   }
 }
