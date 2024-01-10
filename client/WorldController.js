@@ -61,8 +61,8 @@ class WorldController {
     selectionBox.style.height = "0px";
     world.bees.map((bee) => (bee.selected = false));
     const cursorCoords = { x: event.x - xOffset, y: event.y - yOffset };
-    world.bees.forEach((bee, i) => {
-      world.bees[i].selected = isPointInsideSelectionBox(cursorCoords.x, cursorCoords.y, bee.x, bee.y, bee.width, bee.height);
+    world.bees.forEach(bee => {
+      bee.selected = isPointInsideSelectionBox(cursorCoords.x, cursorCoords.y, bee.x, bee.y, bee.width, bee.height);
     });
   }
 
