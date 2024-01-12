@@ -48,7 +48,7 @@ class WorldController {
     selectionBox.style.display = "none";
   }
 
-  onMouseClick() {
+  onMouseClick(event) {
     this.isMiniMapFocused = this.isMouseOnMiniMap;
     if (event.button !== 0) return;
     this.isDragging = true;
@@ -60,6 +60,10 @@ class WorldController {
     selectionBox.style.width = "0px";
     selectionBox.style.height = "0px";
     world.bees.map((bee) => (bee.selected = false));
+    const cursorCoords = { x: event.x - xOffset, y: event.y - yOffset };
+    world.bees.forEach(bee => {
+      bee.selected = isPointInsideSelectionBox(cursorCoords.x, cursorCoords.y, bee.x, bee.y, bee.width, bee.height);
+    });
   }
 
   onMouseRightClick(event) {
