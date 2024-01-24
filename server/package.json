@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "npx tsc && node build/server.js",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "_moduleAliases": {
+    "@entities": "build/entities",
+    "@lib": "build/lib",
+    "@typing": "build/types"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.16.0",
+    "module-alias": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.2",
+    "@types/ws": "^8.5.10",
+    "gts": "^5.2.0",
+    "typescript": "~5.2.0"
+  }
+}

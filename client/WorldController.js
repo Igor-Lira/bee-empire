@@ -9,8 +9,10 @@ class WorldController {
   startMouseY;
   boxWidth;
   boxHeight;
+  world;
 
-  constructor() {
+  constructor(world) {
+    this.world = world;
     this.miniMapSetup();
     this.outerBorders = document.getElementById('outer-borders');
   }
@@ -42,7 +44,7 @@ class WorldController {
     this.lookForEntitiesInsideSelectionBox();
   }
 
-  onMouseUp(event) {
+  onMouseUp() {
     this.isDragging = false;
     isMouseover = false;
     selectionBox.style.display = "none";
@@ -59,18 +61,21 @@ class WorldController {
     selectionBox.style.top = this.startMouseY + "px";
     selectionBox.style.width = "0px";
     selectionBox.style.height = "0px";
-    world.bees.map((bee) => (bee.selected = false));
     const cursorCoords = { x: event.x - xOffset, y: event.y - yOffset };
-    world.bees.forEach(bee => {
+    for (const beeId in this.world.bees) {
+      const bee = this.world.bees[beeId];
+      if (bee.mine) {
+        bee.selected = false;
+      }
       bee.selected = isPointInsideSelectionBox(cursorCoords.x, cursorCoords.y, bee.x, bee.y, bee.width, bee.height);
-    });
+    }
   }
 
   onMouseRightClick(event) {
     event.preventDefault();
     this.rightClickAnimation(event);
-    for (let beeId in world.bees) {
-      world.bees[beeId].onRightClick(event);
+    for (let beeId in this.world.bees) {
+      this.world.bees[beeId].onRightClick(event);
     }
   }
 
@@ -110,8 +115,8 @@ class WorldController {
   }
 
   lookForEntitiesInsideSelectionBox() {
-    for (let beeId in world.bees) {
-      world.bees[beeId].isInsideSelectionBox({
+    for (let beeId in this.world.bees) {
+      this.world.bees[beeId].isInsideSelectionBox({
         offsetLeft: selectionBox.offsetLeft - xOffset,
         offsetTop: selectionBox.offsetTop - yOffset,
         width: Math.abs(this.boxWidth),

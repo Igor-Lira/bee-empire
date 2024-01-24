@@ -1,0 +1,11 @@
+{
+  "world": {
+    "rows": 5,
+    "cols": 5,
+    "hexSize": 100
+  },
+  "bee": {
+    "width": 20,
+    "height": 20
+  }
+}
