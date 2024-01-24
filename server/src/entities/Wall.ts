@@ -27,6 +27,7 @@ class Wall {
   isOnFight: boolean = false;
   world: World;
   fight: FightController;
+  INNER_OFFSET_SCALE = 0.85;
 
   constructor(
     hexagon: Hexagon,
@@ -46,41 +47,41 @@ class Wall {
     this.hexagon = hexagon;
     this.world = world;
     this.boundary = this.setBoundary();
+    this.maskForFights = this.setBoundary(this.INNER_OFFSET_SCALE*this.size);
     const {x, y} = unitaryOrthogonalVector(this.boundary);
-    this.maskForFights = this.setMaskForFightCollision();
     this.direction = new Vector(x,y);
     this.fight = new FightController(this);
   }
 
 
-  setBoundary(): Line {
+  setBoundary(size = this.size): Line {
     switch (this.type) {
       case WallType.L1: {
         return new Line(
           this.pos.x,
-          this.pos.y + this.size * Math.sqrt(3),
-          this.pos.x + 1.5 * this.size,
-          this.pos.y + (Math.sqrt(3) * this.size) / 2
+          this.pos.y + size * Math.sqrt(3),
+          this.pos.x + 1.5 * size,
+          this.pos.y + (Math.sqrt(3) * size) / 2
         );
         break;
       }
 
       case WallType.L2: {
         return new Line(
-          this.pos.x + 1.5 * this.size,
-          this.pos.y + (Math.sqrt(3) * this.size) / 2,
-          this.pos.x + 1.5 * this.size,
-          this.pos.y - (Math.sqrt(3) * this.size) / 2
+          this.pos.x + 1.5 * size,
+          this.pos.y + (Math.sqrt(3) * size) / 2,
+          this.pos.x + 1.5 * size,
+          this.pos.y - (Math.sqrt(3) * size) / 2
         );
         break;
       }
 
       case WallType.L3: {
         return new Line(
-          this.pos.x + 1.5 * this.size,
-          this.pos.y - Math.sqrt(3) * this.size / 2,
+          this.pos.x + 1.5 * size,
+          this.pos.y - Math.sqrt(3) * size / 2,
           this.pos.x,
-          this.pos.y - this.size * Math.sqrt(3)
+          this.pos.y - size * Math.sqrt(3)
         );
         break;
       }
@@ -88,90 +89,30 @@ class Wall {
       case WallType.L4: {
         return new Line(
           this.pos.x,
-          this.pos.y - this.size * Math.sqrt(3),
-          this.pos.x - 1.5 * this.size,
-          this.pos.y - Math.sqrt(3) * this.size / 2
+          this.pos.y - size * Math.sqrt(3),
+          this.pos.x - 1.5 * size,
+          this.pos.y - Math.sqrt(3) * size / 2
         );
         break;
       }
 
       case WallType.L5: {
         return new Line(
-          this.pos.x - 1.5 * this.size,
-          this.pos.y - Math.sqrt(3) * this.size / 2,
-          this.pos.x - 1.5 * this.size,
-          this.pos.y + Math.sqrt(3) * this.size / 2
+          this.pos.x - 1.5 * size,
+          this.pos.y - Math.sqrt(3) * size / 2,
+          this.pos.x - 1.5 * size,
+          this.pos.y + Math.sqrt(3) * size / 2
         );
         break;
       }
 
       case WallType.L6: {
         return new Line(
-          this.pos.x - 1.5 * this.size,
-          this.pos.y + Math.sqrt(3) * this.size / 2,
+          this.pos.x - 1.5 * size,
+          this.pos.y + Math.sqrt(3) * size / 2,
           this.pos.x,
-          this.pos.y + this.size * Math.sqrt(3)
+          this.pos.y + size * Math.sqrt(3)
         );
-        break;
-      }
-    }
-  }
-
-  setMaskForFightCollision(): Line {
-    switch (this.type) {
-      case WallType.L1: {
-        return new Line(
-          this.boundary.x1 + 50*Math.cos(Math.PI/6),
-          this.boundary.y1 - 50*Math.sin(Math.PI/6) - 10,
-          this.boundary.x2 - 25*Math.sin(Math.PI/3) - 15,
-          this.boundary.y2 + 25*Math.cos(Math.PI/3),
-        )
-        break;
-      }
-      case WallType.L2: {
-        return new Line(
-          this.boundary.x1 - 10,
-          this.boundary.y1 - 20,
-          this.boundary.x2 - 10,
-          this.boundary.y2 + 20,
-        )
-        break;
-      }
-      case WallType.L3: {
-        return new Line(
-          this.boundary.x1 - 25*Math.sin(Math.PI/3) - 20,
-          this.boundary.y1 - 25*Math.cos(Math.PI/3),
-          this.boundary.x2 + 50*Math.cos(Math.PI/6),
-          this.boundary.y2 + 50*Math.sin(Math.PI/6) + 10,
-        )
-        break;
-      }
-
-      case WallType.L4: {
-        return new Line(
-          this.boundary.x1 - 50*Math.sin(Math.PI/3) + 15,
-          this.boundary.y1 + 50*Math.cos(Math.PI/3),
-          this.boundary.x2 + 50*Math.cos(Math.PI/6),
-          this.boundary.y2 - 50*Math.sin(Math.PI/6) + 10,
-        )
-        break;
-      }
-      case WallType.L5: {
-        return new Line(
-          this.boundary.x1 + 10,
-          this.boundary.y1 + 20,
-          this.boundary.x2 + 10,
-          this.boundary.y2 - 20,
-        )
-        break;
-      }
-      case WallType.L6: {
-        return new Line(
-          this.boundary.x1 + 50*Math.cos(Math.PI/6),
-          this.boundary.y1 + 50*Math.sin(Math.PI/6) - 10,
-          this.boundary.x2 - 50*Math.sin(Math.PI/3) + 20,
-          this.boundary.y2 - 50*Math.cos(Math.PI/3),
-        )
         break;
       }
     }

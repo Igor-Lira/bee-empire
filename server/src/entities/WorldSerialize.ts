@@ -60,7 +60,7 @@ class WorldSerialize {
           x: hexagon.pos.x,
           y: hexagon.pos.y,
           size: hexagon.size,
-          walls: this.formatWalls(clientId, hexagon.walls)
+          walls: this.formatWalls(clientId, hexagon.walls),
         })
     }
     return honeycomb;
@@ -74,11 +74,16 @@ class WorldSerialize {
         x: wall.pos.x,
         y: wall.pos.y,
         boundary: wall.boundary,
+        maskFight: {x1: wall.maskForFights.x1, x2: wall.maskForFights.x2, y1: wall.maskForFights.y1, y2: wall.maskForFights.y2},
         mine: wall.owner?.id === clientId && wall.enemyWall?.owner?.id === clientId,
-        isOnFight: wall.isOnFight && (wall.owner?.id !== clientId || wall.enemyWall?.owner?.id !== clientId),
+        isOnFight: this.checkIfWallOnFight(wall, clientId) || (wall.enemyWall && this.checkIfWallOnFight(wall.enemyWall, clientId)),
       })
     }
     return _walls;
+  }
+
+  checkIfWallOnFight(wall: Wall, clientId: string): boolean {
+    return wall.isOnFight && (wall.owner?.id !== clientId || wall.enemyWall?.owner?.id !== clientId)
   }
 }
 

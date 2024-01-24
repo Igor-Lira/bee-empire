@@ -34,6 +34,21 @@ function drawWalls(hexagon) {
   ctx.fill();
   ctx.stroke();
 
+  /** DEBUG: Draw Fight Masks **/
+  ctx.beginPath();
+
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'red';
+
+  hexagon?.walls?.forEach(wall => {
+    ctx.lineTo(wall.maskFight.x2 + xOffset, wall.maskFight.y2 + yOffset);
+  });
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  /** DEBUG: Draw Fight Masks **/
+
+
   ctx.fillStyle = _fillStyle;
   ctx.lineWidth = _lineWidth;
   ctx.strokeStyle = _strokeStyle;
