@@ -48,7 +48,7 @@ class WorldController {
     selectionBox.style.display = "none";
   }
 
-  onMouseClick() {
+  onMouseClick(event) {
     this.isMiniMapFocused = this.isMouseOnMiniMap;
     if (event.button !== 0) return;
     this.isDragging = true;
@@ -59,13 +59,14 @@ class WorldController {
     selectionBox.style.top = this.startMouseY + "px";
     selectionBox.style.width = "0px";
     selectionBox.style.height = "0px";
+    const cursorCoords = { x: event.x - xOffset, y: event.y - yOffset };
     for (const beeId in world.bees) {
       const bee = world.bees[beeId];
       if (bee.mine) {
         bee.selected = false;
       }
+      bee.selected = isPointInsideSelectionBox(cursorCoords.x, cursorCoords.y, bee.x, bee.y, bee.width, bee.height);
     }
-    // world.bees.map((bee) => (bee.selected = false));
   }
 
   onMouseRightClick(event) {
@@ -113,14 +114,12 @@ class WorldController {
 
   lookForEntitiesInsideSelectionBox() {
     for (let beeId in world.bees) {
-      if (world.bees[beeId].mine) {
-        world.bees[beeId].isInsideSelectionBox({
-          offsetLeft: selectionBox.offsetLeft - xOffset,
-          offsetTop: selectionBox.offsetTop - yOffset,
-          width: Math.abs(this.boxWidth),
-          height: Math.abs(this.boxHeight),
-        });
-      }
+      world.bees[beeId].isInsideSelectionBox({
+        offsetLeft: selectionBox.offsetLeft - xOffset,
+        offsetTop: selectionBox.offsetTop - yOffset,
+        width: Math.abs(this.boxWidth),
+        height: Math.abs(this.boxHeight),
+      });
     }
   }
 
