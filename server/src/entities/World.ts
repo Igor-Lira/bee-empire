@@ -4,6 +4,7 @@ import WorldSerialize from "@entities/WorldSerialize";
 import Player from "@entities/Player";
 import WorldController from "@entities/WorldController";
 import Honeycomb from "@entities/Honeycomb";
+import config from "../config.json";
 
 class World {
   pos: Vector;
@@ -12,6 +13,9 @@ class World {
   players: {[id: string]: Player} = {}
   bees: {[id: string]: Bee} = {}
   honeycomb: Honeycomb;
+  numberOfColumns: number;
+  numberOfRows: number;
+  hexagonSize: number;
 
   serialize: WorldSerialize;
   controller: WorldController;
@@ -24,6 +28,9 @@ class World {
     this.honeycomb.setup();
     this.serialize = new WorldSerialize(this);
     this.controller = new WorldController(this);
+    this.numberOfRows = config.world.rows;
+    this.numberOfColumns = config.world.cols;
+    this.hexagonSize = config.world.hexSize;
   }
 }
 

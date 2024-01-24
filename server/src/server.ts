@@ -9,6 +9,7 @@ world.controller.loop();
 const wss = new WebSocketServer({port: 8080});
 
 wss.on('connection', ws => {
+  ws.send(world.serialize.serializeWorldProps());
 
   const clientId = getUniqueID();
   const player = world.controller.onPlayerConnected(clientId);

@@ -9,17 +9,22 @@ class World {
   controller;
   HEXAGON_BACKGROUND_NOT_CONQUERED = '#F9F171';
   HEXAGON_BACKGROUND_CONQUERED = '#e3ff00';
+  MY_WALL = '#f0e68c';
+  fightColorsStyle = ['red', 'violet'];
 
-
-  constructor() {
-    this.x = 0;
-    this.y = 0;
-    this.width = cols * 2 * hexWidth;
-    this.height = rows * 1.5 * hexHeight;
+  constructor(world) {
+    this.x = world.x;
+    this.y = world.y;
+    const hexSize = world.hexSize;
+    const hexHeight = hexSize * Math.sqrt(3);
+    const hexWidth = hexSize * 1.5;
+    this.width = world.cols * 2 * hexWidth;
+    this.height = world.rows * 1.5 * hexHeight;
     MAX_OFFSET_X_INF = -this.width + window.innerWidth - 200;
     MAX_OFFSET_Y_INF = -this.height + window.innerHeight - 200;
-    this.honeycomb = new Honeycomb();
-    this.controller = new WorldController();
+    this.controller = new WorldController(this);
+    setListeners(this);
+    this.loop();
   }
 
   loop() {
@@ -30,7 +35,7 @@ class World {
 
   drawEntities(data) {
     this.data = data;
-    const hexagons = this.data.world?.hexagons;
+    const hexagons = this.data.honeycomb?.hexagons;
     hexagons?.forEach(hexagon => {
       this.drawWalls(hexagon);
       this.drawHexagonCenter(hexagon);
@@ -42,8 +47,8 @@ class World {
     const bees = this.data?.bees;
     this.data.bees = bees;
     this.data.bees.forEach(bee => {
-      if (!world.bees[bee.id]) {
-        world.bees[bee.id] = new Bee(1, bee.id);
+      if (!this.bees[bee.id]) {
+        this.bees[bee.id] = new Bee(1, bee.id);
       }
       this.bees[bee.id].mine = bee.mine;
       this.bees[bee.id].x = bee.x;
@@ -57,6 +62,29 @@ class World {
     const _lineWidth = ctx.lineWidth;
     const _strokeStyle = ctx.strokeStyle;
 
+    this.drawWallsDefault(hexagon);
+
+
+    /** DEBUG **/
+    // this.drawWallFightMasks(hexagon);
+
+
+    ctx.fillStyle = _fillStyle;
+    ctx.lineWidth = _lineWidth;
+    ctx.strokeStyle = _strokeStyle;
+
+
+    ctx.lineWidth = 4;
+    hexagon?.walls?.forEach(wall => {
+      if (wall.isOnFight) {
+        this.drawFights(wall);
+      } else if (wall.mine) {
+        this.drawMyWalls(wall);
+      }
+    })
+  }
+
+  drawWallsDefault(hexagon) {
     ctx.beginPath();
     if (hexagon?.mine) {
       ctx.fillStyle = this.HEXAGON_BACKGROUND_CONQUERED;
@@ -68,13 +96,14 @@ class World {
 
     hexagon?.walls?.forEach(wall => {
       ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-    })
+    });
 
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+  }
 
-    /** DEBUG: Draw Fight Masks **/
+  drawWallFightMasks(hexagon) {
     ctx.beginPath();
 
     ctx.lineWidth = 4;
@@ -86,48 +115,34 @@ class World {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    /** DEBUG: Draw Fight Masks **/
+  }
 
-
-    ctx.fillStyle = _fillStyle;
-    ctx.lineWidth = _lineWidth;
+  drawMyWalls(wall) {
+    ctx.beginPath();
+    const _strokeStyle = ctx.strokeStyle;
+    const _lineWidth = ctx.lineWidth;
+    ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
+    ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
+    ctx.strokeStyle = this.MY_WALL;
+    ctx.lineWidth = 5;
+    ctx.stroke();
     ctx.strokeStyle = _strokeStyle;
+    ctx.lineWidth = _lineWidth;
+    ctx.closePath();
+  }
 
-
-    /** Draw Flights + Draw My Walls **/
-    ctx.lineWidth = 4;
-    hexagon?.walls?.forEach(wall => {
-      if (wall.isOnFight) {
-        const _strokeStyle = ctx.strokeStyle;
-        const _lineWidth = ctx.lineWidth;
-        ctx.beginPath();
-        const fightColorsStyle = ['red', 'violet'];
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = fightColorsStyle[fightColorsStyle.length * Math.random() | 0];
-        ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
-        ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-        ctx.stroke();
-        ctx.closePath();
-        ctx.strokeStyle = _strokeStyle;
-        ctx.lineWidth = _lineWidth;
-      } else if (wall.mine) {
-        if (wall.mine) {
-          ctx.beginPath();
-          const _strokeStyle = ctx.strokeStyle;
-          const _lineWidth = ctx.lineWidth;
-          ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
-          ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-          ctx.strokeStyle = '#f0e68c';
-          ctx.lineWidth = 5;
-          ctx.stroke();
-          ctx.strokeStyle = _strokeStyle;
-          ctx.lineWidth = _lineWidth;
-          ctx.closePath();
-        }
-      }
-    })
-
-
+  drawFights(wall) {
+    const _strokeStyle = ctx.strokeStyle;
+    const _lineWidth = ctx.lineWidth;
+    ctx.beginPath();
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = this.fightColorsStyle[this.fightColorsStyle.length * Math.random() | 0];
+    ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
+    ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.strokeStyle = _strokeStyle;
+    ctx.lineWidth = _lineWidth;
   }
 
   drawHexagonCenter(hexagon) {
@@ -145,5 +160,4 @@ class World {
     ctx.fillStyle = _fillStyle;
     ctx.lineWidth = _lineWidth;
   }
-
 }

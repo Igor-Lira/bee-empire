@@ -15,15 +15,22 @@ class WorldSerialize {
 
   formatForSerialize(clientId: string): any {
     const obj = {
-      position: {
-        x: this.world.pos.x,
-        y: this.world.pos.y,
-      },
       players: this.formatPlayers(),
       bees: this.formatBees(clientId),
-      world: this.formatWorld(clientId)
+      honeycomb: this.formatHoneycomb(clientId)
     };
     return obj;
+  }
+
+  serializeWorldProps() {
+    return JSON.stringify({
+      type: 'create-world',
+      x: this.world.pos.x,
+      y: this.world.pos.y,
+      cols: this.world.numberOfColumns,
+      rows: this.world.numberOfRows,
+      hexSize: this.world.hexagonSize,
+    });
   }
 
   formatBees(clientId: string): any {
@@ -51,17 +58,17 @@ class WorldSerialize {
     return players;
   }
 
-  formatWorld(clientId: string): any {
+  formatHoneycomb(clientId: string): any {
     const honeycomb = { hexagons: [] } as any;
     for (const hexagonId in this.world.honeycomb.hexagons) {
       const hexagon = this.world.honeycomb.hexagons[hexagonId];
-        honeycomb.hexagons.push({
-          mine: hexagon.owner?.id === clientId,
-          x: hexagon.pos.x,
-          y: hexagon.pos.y,
-          size: hexagon.size,
-          walls: this.formatWalls(clientId, hexagon.walls),
-        })
+      honeycomb.hexagons.push({
+        mine: hexagon.owner?.id === clientId,
+        x: hexagon.pos.x,
+        y: hexagon.pos.y,
+        size: hexagon.size,
+        walls: this.formatWalls(clientId, hexagon.walls),
+      })
     }
     return honeycomb;
   }

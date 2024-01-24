@@ -30,12 +30,6 @@ window.requestAnimFrame = (function () {
     };
 })();
 
-const hexSize = 100;
-const hexHeight = hexSize * Math.sqrt(3);
-const hexWidth = hexSize * 1.5;
-const rows = 4;
-const cols = 4;
 let xOffset = 0;
 let yOffset = 0;
-
-const myId = 1;
+let world;
