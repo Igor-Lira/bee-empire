@@ -5,6 +5,8 @@ import {FightEntity} from "@typing/wall";
 class FightController {
   HEALTH = 100;
   wall: Wall;
+  /** attacking = number of bees attacking the wall **/
+  /** score = number of accumulated attacked **/
   entity1: FightEntity = { player: null, score: 0, attacking: 0};
   entity2: FightEntity = { player: null, score: 0, attacking: 0};
 
@@ -14,9 +16,8 @@ class FightController {
 
   compute() {
     if (this.wall.isExternalBorder) { return; }
+    if (this.wall.hexagon.isOnSafety || this.wall.enemyWall?.hexagon.isOnSafety ) { return; }
     if (this.wall.collisionsWithMask.length > 0) {
-      // const player1 = this.wall.owner?.id || 'NONE';
-      // const player2 = this.wall.enemyHexagon?.owner?.id || 'NONE';
 
       this.entity1.attacking = 0;
       this.entity2.attacking = 0;
@@ -45,7 +46,10 @@ class FightController {
         }
       }
 
-      if (this.entity1.attacking > 0 || this.entity2.attacking > 0) {
+      if (
+          (this.entity1.attacking > 0 && (this.wall.owner?.id !== this.entity1.player?.id || this.wall.enemyWall?.owner?.id !== this.entity1.player?.id)) ||
+          (this.entity2.attacking > 0 && (this.wall.owner?.id !== this.entity2.player?.id || this.wall.enemyWall?.owner?.id !== this.entity2.player?.id))
+      ) {
         this.wall.isOnFight = true;
       } else {
         this.wall.isOnFight = true;

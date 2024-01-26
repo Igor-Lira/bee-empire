@@ -11,6 +11,8 @@ class Hexagon {
   owner: Player | null = null;
   world: World;
   walls: {[id: string]: Wall} = {}
+  isOnSafety = false;
+  SAFETY_TIMEOUT = 10000;
 
   constructor(pos: Vector, row: number, col: number, size: number, world: World) {
     this.id = row.toString() + col.toString();
@@ -33,8 +35,13 @@ class Hexagon {
   }
 
   conquer(player: Player){
+    if (this.isOnSafety) return;
     console.log('[HEXAGON CONQUERED]', player.id);
     this.owner = player;
+    this.isOnSafety = true;
+    setTimeout(() => {
+      this.isOnSafety = false;
+    }, this.SAFETY_TIMEOUT)
     this.world.controller.conquerBeesInHexagon(this, player);
     for (const wallId in this.walls) {
       this.walls[wallId].conquer(player);

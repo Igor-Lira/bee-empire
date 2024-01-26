@@ -81,10 +81,11 @@ class WorldSerialize {
         x: wall.pos.x,
         y: wall.pos.y,
         boundary: wall.boundary,
+        isOnSafety: wall.hexagon.isOnSafety || wall.enemyWall?.hexagon.isOnSafety,
         maskFight: {x1: wall.maskForFights.x1, x2: wall.maskForFights.x2, y1: wall.maskForFights.y1, y2: wall.maskForFights.y2},
         mine: wall.owner?.id === clientId && wall.enemyWall?.owner?.id === clientId,
         isOnFight: this.checkIfWallOnFight(wall, clientId) || (wall.enemyWall && this.checkIfWallOnFight(wall.enemyWall, clientId)),
-      })
+      });
     }
     return _walls;
   }

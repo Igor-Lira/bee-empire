@@ -10,6 +10,7 @@ class World {
   HEXAGON_BACKGROUND_NOT_CONQUERED = '#F9F171';
   HEXAGON_BACKGROUND_CONQUERED = '#e3ff00';
   MY_WALL = '#f0e68c';
+  WALL_ON_SAFETY = 'blue';
   fightColorsStyle = ['red', 'violet'];
 
   constructor(world) {
@@ -76,7 +77,9 @@ class World {
 
     ctx.lineWidth = 4;
     hexagon?.walls?.forEach(wall => {
-      if (wall.isOnFight) {
+      if (wall?.isOnSafety) {
+        this.drawSafeWalls(wall);
+      } else if (wall?.isOnFight) {
         this.drawFights(wall);
       } else if (wall.mine) {
         this.drawMyWalls(wall);
@@ -115,6 +118,20 @@ class World {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+  }
+
+  drawSafeWalls(wall) {
+    ctx.beginPath();
+    const _strokeStyle = ctx.strokeStyle;
+    const _lineWidth = ctx.lineWidth;
+    ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
+    ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
+    ctx.strokeStyle = this.WALL_ON_SAFETY;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.strokeStyle = _strokeStyle;
+    ctx.lineWidth = _lineWidth;
+    ctx.closePath();
   }
 
   drawMyWalls(wall) {
