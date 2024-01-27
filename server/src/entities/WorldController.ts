@@ -14,7 +14,6 @@ import Wall from "@entities/Wall";
 import Hexagon from "@entities/Hexagon";
 import WorldPlayerController from "@entities/WorldPlayerController";
 import config from "../config.json";
-import {clearInterval} from "timers";
 
 class WorldController {
 
