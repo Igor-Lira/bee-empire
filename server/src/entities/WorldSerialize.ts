@@ -1,6 +1,7 @@
 import World from "@entities/World";
 import Wall from "@entities/Wall";
 import config from "../config.json";
+import Player from "@entities/Player";
 
 class WorldSerialize {
 
@@ -22,7 +23,7 @@ class WorldSerialize {
     return obj;
   }
 
-  serializeWorldProps() {
+  serializeWorldProps(): string {
     return JSON.stringify({
       type: 'create-world',
       x: this.world.pos.x,
@@ -31,6 +32,20 @@ class WorldSerialize {
       rows: this.world.numberOfRows,
       hexSize: this.world.hexagonSize,
     });
+  }
+
+  serializePlayerConnected(player: Player): string {
+    return JSON.stringify({
+      type: 'on-player-connected',
+      x: player.initialHexagon?.pos.x,
+      y: player.initialHexagon?.pos.y
+    })
+  }
+
+  serializeWorldIsFull(): string {
+    return JSON.stringify({
+      type: 'world-is-full',
+    })
   }
 
   formatBees(clientId: string): any {

@@ -8,8 +8,8 @@ ctx.font = "48px serif";
 let MAX_OFFSET_X_INF = -1800;
 let MAX_OFFSET_Y_INF = -1900;
 
-let MAX_OFFSET_X_SUP = 200;
-let MAX_OFFSET_Y_SUP = 200;
+let MAX_OFFSET_X_SUP = 300;
+let MAX_OFFSET_Y_SUP = 300;
 
 const cursor = {
   x : 0,

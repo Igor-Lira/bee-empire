@@ -9,10 +9,26 @@ socket.onmessage = (event) => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   const data = JSON.parse(event.data);
-  if (data?.type === 'create-world') {
-    world = new World(data);
-  } else {
-    world.drawEntities(data);
+  switch(data.type) {
+    case 'create-world': {
+      world = new World(data);
+      break;
+    }
+    case 'on-player-connected': {
+      if (!isNaN(data.x) && !isNaN(data.y)) {
+        console.log('player connected !!', data);
+        xOffset -= data.x - window.innerWidth/2;
+        yOffset -= data.y - window.innerHeight/2;
+      }
+      break;
+    }
+    case 'world-is-full': {
+      console.log('WORLD IS FULL');
+      break;
+    }
+    default: {
+      world.drawEntities(data);
+    }
   }
 };
 

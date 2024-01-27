@@ -2,7 +2,11 @@
   "world": {
     "rows": 5,
     "cols": 5,
-    "hexSize": 100
+    "hexSize": 100,
+    "maxNumberOfConnectedPlayers": 4
+  },
+  "player": {
+    "initialNumberOfBees": 3
   },
   "bee": {
     "width": 20,

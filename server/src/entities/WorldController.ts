@@ -123,14 +123,18 @@ class WorldController {
     wall.fight.compute();
   }
 
+  isWorldFull(): boolean {
+    return Object.keys(this.world.players).length >= config.world.maxNumberOfConnectedPlayers;
+  }
 
-  onPlayerConnected(id: string) {
-    const player = this.addPlayer(id);
-    const hexagon = this.addHexagonToPlayer(player);
-    this.addBeeToPlayer(player, hexagon);
-    this.addBeeToPlayer(player, hexagon);
-    this.addBeeToPlayer(player, hexagon);
-    return player;
+  onPlayerConnected(id: string): Player {
+      const player = this.addPlayer(id);
+      const hexagon = this.addHexagonToPlayer(player);
+      player.initialHexagon = hexagon;
+      for (let i = 0; i < config.player.initialNumberOfBees; i ++) {
+        this.addBeeToPlayer(player, hexagon);
+      }
+      return player;
   }
 
   addPlayer(id: string) {
