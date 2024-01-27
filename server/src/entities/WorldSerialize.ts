@@ -2,12 +2,26 @@ import World from "@entities/World";
 import Wall from "@entities/Wall";
 import config from "../config.json";
 import Player from "@entities/Player";
+import WebSocket from "ws";
 
 class WorldSerialize {
 
   world: World;
   constructor(world: World) {
     this.world = world;
+    this.loop();
+  }
+
+  loop() {
+    if (this.world.destroyed) return;
+    setTimeout(() => {
+      this.world.wss.clients.forEach((ws: any) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(this.serialize(ws.clientId));
+        }
+      })
+      this.loop();
+    }, 10);
   }
 
   serialize(clientId: string): string {

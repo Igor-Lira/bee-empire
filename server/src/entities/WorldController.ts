@@ -14,7 +14,7 @@ import Wall from "@entities/Wall";
 import Hexagon from "@entities/Hexagon";
 import WorldPlayerController from "@entities/WorldPlayerController";
 import config from "../config.json";
-
+import {clearInterval} from "timers";
 
 class WorldController {
 
@@ -29,8 +29,24 @@ class WorldController {
   }
 
   loop() {
-    setInterval(() => this.checkFights(), 50);
-    setInterval(() => this.updateBees(), 500);
+    this.beeLoop();
+    this.fightLoop();
+  }
+
+  beeLoop() {
+    if (this.world.destroyed) return;
+    setTimeout(() => {
+      this.updateBees();
+      this.beeLoop();
+    }, 100);
+  }
+
+  fightLoop() {
+    if (this.world.destroyed) return;
+    setTimeout(() => {
+      this.checkFights();
+      this.fightLoop();
+    }, 50);
   }
 
   updateBees(){
@@ -50,6 +66,25 @@ class WorldController {
     for (const beeId in this.world.bees) {
       cb(this.world.bees[beeId]);
     }
+  }
+
+  checkIfWorldIsConqueredByPlayer(): boolean {
+    let isWorldConquered = true;
+    let player: string | null = null;
+    this.world.honeycomb.forEachHexagon(hexagon => {
+      if (!hexagon.owner?.id) {
+        isWorldConquered = false;
+      } else {
+        if (!player) {
+          player = hexagon.owner.id;
+        } else {
+          if (player !== hexagon.owner.id) {
+            isWorldConquered = false;
+          }
+        }
+      }
+    })
+    return isWorldConquered;
   }
 
   conquerBeesInHexagon(hexagon: Hexagon, player: Player) {
@@ -125,6 +160,12 @@ class WorldController {
 
   isWorldFull(): boolean {
     return Object.keys(this.world.players).length >= config.world.maxNumberOfConnectedPlayers;
+  }
+
+  worldIsConquered(): string {
+    return JSON.stringify({
+      type: 'world-conquered'
+    })
   }
 
   onPlayerConnected(id: string): Player {
@@ -212,7 +253,9 @@ class WorldController {
     return new Vector(x, y);
   }
 
-  moveBee(player: Player, beeId: string, xTarget: number, yTarget: number) {
+  moveBee(playerId: string, beeId: string, xTarget: number, yTarget: number) {
+    const player = this.world.players[playerId];
+    if (!player) return;
     const bee = this.world.bees[beeId];
     if (this.world.bees[beeId].player.id === player.id) {
       bee.trajectory.target.x = xTarget;
@@ -242,7 +285,7 @@ class WorldController {
         if (distance > 15) {
           clearInterval(bee.trajectory.interval);
           bee.isMoving = true;
-          bee.trajectory.interval = setTimeout(() => this.moveBee(player, beeId, xTarget, yTarget), this.MOVE_REFRESH_RATE);
+          bee.trajectory.interval = setTimeout(() => this.moveBee(playerId, beeId, xTarget, yTarget), this.MOVE_REFRESH_RATE);
         } else {
           bee.isMoving = false;
         }

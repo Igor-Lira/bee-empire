@@ -11,7 +11,13 @@ socket.onmessage = (event) => {
   const data = JSON.parse(event.data);
   switch(data.type) {
     case 'create-world': {
-      world = new World(data);
+      console.log('create-world');
+      if (!world) {
+        world = new World(data);
+      }
+      break;
+    }
+    case 'world-conquered': {
       break;
     }
     case 'on-player-connected': {

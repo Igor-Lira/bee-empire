@@ -5,6 +5,7 @@ import Player from "@entities/Player";
 import WorldController from "@entities/WorldController";
 import Honeycomb from "@entities/Honeycomb";
 import config from "../config.json";
+import {WebSocketServer} from "ws";
 
 class World {
   pos: Vector;
@@ -16,11 +17,14 @@ class World {
   numberOfColumns: number;
   numberOfRows: number;
   hexagonSize: number;
+  wss: WebSocketServer;
 
   serialize: WorldSerialize;
   controller: WorldController;
+  destroyed: boolean = false;
 
-  constructor() {
+  constructor(wss: WebSocketServer) {
+    this.wss = wss;
     this.pos = new Vector(0, 0);
     this.width = 100;
     this.height = 100;
@@ -31,6 +35,11 @@ class World {
     this.numberOfRows = config.world.rows;
     this.numberOfColumns = config.world.cols;
     this.hexagonSize = config.world.hexSize;
+    this.controller.loop();
+  }
+
+  onReset() {
+    this.destroyed = true;
   }
 }
 
