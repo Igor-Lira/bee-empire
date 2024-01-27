@@ -7,5 +7,16 @@
   "bee": {
     "width": 20,
     "height": 20
+  },
+  "colors": {
+    "players": {
+      "base": ["#BF3450","#F7B1E2", "#17BEBB", "#918EF4"]
+    },
+    "wall": {
+      "fight": ["red", "violet"],
+      "safe": "blue",
+      "base": "#E6CC47",
+      "external": "#FFC53A"
+    }
   }
 }

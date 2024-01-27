@@ -13,6 +13,7 @@ import {
 import Wall from "@entities/Wall";
 import Hexagon from "@entities/Hexagon";
 import WorldPlayerController from "@entities/WorldPlayerController";
+import config from "../config.json";
 
 
 class WorldController {
@@ -20,6 +21,7 @@ class WorldController {
   world: World;
   player: WorldPlayerController;
   MOVE_REFRESH_RATE = 10;
+  usedColors: string[] = [];
 
   constructor(world: World) {
     this.world = world;
@@ -132,9 +134,25 @@ class WorldController {
   }
 
   addPlayer(id: string) {
-    const player = new Player(id);
+    const player = new Player(id, this.getColorForPlayer());
     this.world.players[id] = player;
     return player;
+  }
+
+  getColorForPlayer(): string {
+    const colors = config.colors.players.base;
+    let color = colors[0];
+    if (this.usedColors.length && this.usedColors.length === colors.length) {
+      color = colors[Math.floor(Math.random()*colors.length)];
+    }
+    colors.some(c => {
+      if (!this.usedColors.includes(c)){
+        color = c;
+        this.usedColors.push(c);
+        return true;
+      }
+    });
+    return color;
   }
 
   addBeeToPlayer(player: Player, hexagon: Hexagon) {

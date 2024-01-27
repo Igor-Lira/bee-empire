@@ -1,6 +1,6 @@
 import World from "@entities/World";
 import Wall from "@entities/Wall";
-import Bee from "@entities/Bee";
+import config from "../config.json";
 
 class WorldSerialize {
 
@@ -63,6 +63,7 @@ class WorldSerialize {
     for (const hexagonId in this.world.honeycomb.hexagons) {
       const hexagon = this.world.honeycomb.hexagons[hexagonId];
       honeycomb.hexagons.push({
+        color: hexagon.owner?.color ?? "#E6CC47",
         mine: hexagon.owner?.id === clientId,
         x: hexagon.pos.x,
         y: hexagon.pos.y,
@@ -83,11 +84,38 @@ class WorldSerialize {
         boundary: wall.boundary,
         isOnSafety: wall.hexagon.isOnSafety || wall.enemyWall?.hexagon.isOnSafety,
         maskFight: {x1: wall.maskForFights.x1, x2: wall.maskForFights.x2, y1: wall.maskForFights.y1, y2: wall.maskForFights.y2},
+        color: this.getWallColor(clientId, wall),
         mine: wall.owner?.id === clientId && wall.enemyWall?.owner?.id === clientId,
-        isOnFight: this.checkIfWallOnFight(wall, clientId) || (wall.enemyWall && this.checkIfWallOnFight(wall.enemyWall, clientId)),
+        isOnFight: this.checkIfShouldDrawWallFightForClient(clientId, wall),
       });
     }
     return _walls;
+  }
+
+  getWallColor(clientId: string, wall: Wall): string {
+    let color = config.colors.wall.base;
+    if (wall.hexagon.isOnSafety || wall.enemyWall?.hexagon.isOnSafety) {
+      color = config.colors.wall.safe;
+    } else if (wall.isExternalBorder) {
+      color = config.colors.wall.external;
+    } else if (wall.owner?.id === wall.enemyWall?.owner?.id) {
+      if (wall.owner?.color) {
+        color = wall.owner?.color;
+      }
+    } else if (this.checkIfShouldDrawWallFightForClient(clientId, wall)) {
+      const fightColors = config.colors.wall.fight;
+      color = fightColors[fightColors.length * Math.random() | 0]
+    }
+    return color;
+  }
+
+
+  checkIfShouldDrawWallFightForClient(clientId: string, wall: Wall) {
+    /** Don't draw others fights **/
+    if (wall.owner?.id !== clientId && wall.enemyWall?.owner?.id !== clientId) {
+      return false;
+    }
+    return this.checkIfWallOnFight(wall, clientId) || (wall.enemyWall && this.checkIfWallOnFight(wall.enemyWall, clientId));
   }
 
   checkIfWallOnFight(wall: Wall, clientId: string): boolean {

@@ -7,11 +7,6 @@ class World {
   data = { bees: [] };
   bees = [];
   controller;
-  HEXAGON_BACKGROUND_NOT_CONQUERED = '#F9F171';
-  HEXAGON_BACKGROUND_CONQUERED = '#e3ff00';
-  MY_WALL = '#f0e68c';
-  WALL_ON_SAFETY = 'blue';
-  fightColorsStyle = ['red', 'violet'];
 
   constructor(world) {
     this.x = world.x;
@@ -69,31 +64,22 @@ class World {
     /** DEBUG **/
     // this.drawWallFightMasks(hexagon);
 
+    ctx.lineWidth = 4;
+    hexagon?.walls?.forEach(wall => {
+      this.redrawWallsForActions(wall);
+    })
 
     ctx.fillStyle = _fillStyle;
     ctx.lineWidth = _lineWidth;
     ctx.strokeStyle = _strokeStyle;
-
-
-    ctx.lineWidth = 4;
-    hexagon?.walls?.forEach(wall => {
-      if (wall?.isOnSafety) {
-        this.drawSafeWalls(wall);
-      } else if (wall?.isOnFight) {
-        this.drawFights(wall);
-      } else if (wall.mine) {
-        this.drawMyWalls(wall);
-      }
-    })
   }
 
   drawWallsDefault(hexagon) {
     ctx.beginPath();
-    if (hexagon?.mine) {
-      ctx.fillStyle = this.HEXAGON_BACKGROUND_CONQUERED;
-    } else {
-      ctx.fillStyle = this.HEXAGON_BACKGROUND_NOT_CONQUERED;
-    }
+    const grd = ctx.createRadialGradient(hexagon.x + xOffset, hexagon.y + yOffset,  hexagon.size, hexagon.x + xOffset, hexagon.y + yOffset, 2*hexagon.size);
+    grd.addColorStop(0, "yellow");
+    grd.addColorStop(1, hexagon.color);
+    ctx.fillStyle = grd;
     ctx.lineWidth = 4;
     ctx.strokeStyle = '#E6CC47';
 
@@ -120,46 +106,18 @@ class World {
     ctx.stroke();
   }
 
-  drawSafeWalls(wall) {
+  redrawWallsForActions(wall) {
     ctx.beginPath();
     const _strokeStyle = ctx.strokeStyle;
     const _lineWidth = ctx.lineWidth;
     ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
     ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-    ctx.strokeStyle = this.WALL_ON_SAFETY;
+    ctx.strokeStyle = wall.color;
     ctx.lineWidth = 5;
     ctx.stroke();
     ctx.strokeStyle = _strokeStyle;
     ctx.lineWidth = _lineWidth;
     ctx.closePath();
-  }
-
-  drawMyWalls(wall) {
-    ctx.beginPath();
-    const _strokeStyle = ctx.strokeStyle;
-    const _lineWidth = ctx.lineWidth;
-    ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
-    ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-    ctx.strokeStyle = this.MY_WALL;
-    ctx.lineWidth = 5;
-    ctx.stroke();
-    ctx.strokeStyle = _strokeStyle;
-    ctx.lineWidth = _lineWidth;
-    ctx.closePath();
-  }
-
-  drawFights(wall) {
-    const _strokeStyle = ctx.strokeStyle;
-    const _lineWidth = ctx.lineWidth;
-    ctx.beginPath();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = this.fightColorsStyle[this.fightColorsStyle.length * Math.random() | 0];
-    ctx.moveTo(wall.boundary.x1 + xOffset, wall.boundary.y1 + yOffset);
-    ctx.lineTo(wall.boundary.x2 + xOffset, wall.boundary.y2 + yOffset);
-    ctx.stroke();
-    ctx.closePath();
-    ctx.strokeStyle = _strokeStyle;
-    ctx.lineWidth = _lineWidth;
   }
 
   drawHexagonCenter(hexagon) {
@@ -169,7 +127,7 @@ class World {
     ctx.ellipse(hexagon.x + xOffset, hexagon.y + yOffset, hexagon.size, hexagon.size, Math.PI / 180, 0, 2 * Math.PI);
     const grd = ctx.createRadialGradient(hexagon.x + xOffset, hexagon.y + yOffset, 0, hexagon.x + xOffset, hexagon.y + yOffset, hexagon.size);
     grd.addColorStop(0, "yellow");
-    grd.addColorStop(1, "#E6CC47");
+    grd.addColorStop(1, hexagon.color);
     ctx.fillStyle = grd;
     ctx.lineWidth = 5;
     ctx.fill();

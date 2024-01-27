@@ -130,6 +130,12 @@ class Wall {
         } else {
           hexId = (this.row+1).toString() + (this.col+1).toString();
         }
+        if (this.row === rows - 1) {
+          hexId = null;
+        }
+        if (this.row % 2 === 1 && this.col === cols -1) {
+          hexId = null;
+        }
         break;
       }
       case WallType.L2: {
@@ -215,7 +221,9 @@ class Wall {
     }
     if (hexId) {
       this.enemyHexagon = this.world.honeycomb.hexagons[hexId];
-      this.isExternalBorder = false;
+      if (this.enemyHexagon) {
+        this.isExternalBorder = false;
+      }
     } else {
       this.enemyHexagon = null;
       this.isExternalBorder = true;
