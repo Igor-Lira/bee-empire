@@ -1,7 +1,7 @@
 {
   "world": {
-    "rows": 2,
-    "cols": 2,
+    "rows": 4,
+    "cols": 4,
     "hexSize": 100,
     "maxNumberOfConnectedPlayers": 4
   },
