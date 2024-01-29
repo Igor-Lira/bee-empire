@@ -14,7 +14,7 @@ A strategy multiplayer game to expand your bee empire by attacking enemies corne
 
 ## How to run this project
 
-Run the server for developemnt (You need to have Node and NPM installed): 
+Run the server for development (You need to have Node and NPM installed): 
 ```
 npm install
 ```
