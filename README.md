@@ -1,16 +1,45 @@
 # bee-empire
-A strategy multiplayer game to expand your bee empire over enemies corners.
+
+A strategy multiplayer game to expand your bee empire by attacking enemies corners.
 
 
-[Check the current version (work in progress)](https://igor-lira.github.io/bee-empire/client/index.html)
+## Tech notes
 
-# How to run this project
+- Server has its own engine to handle collisions and compute fights between players.
 
-Just open the index.html
+- Server-Client communicated based on Websockets.
 
-# How to play
+- Client draws world wtih Html canvas functionalities (to be improved). Every new frame is computed by the server.
 
-Select your bees (squares) using your mouse and right-click to the target direction.
+
+## How to run this project
+
+Run the server for developemnt: 
+```
+npm install
+```
+```
+npm run start
+```
+Run server using Docker: 
+```
+docker-compose up --build
+```
+
+Then connect to the client (open the `index.html` file in a navigator)
+
+## How to play
+
+You start with your own hexagon populated with a small army of bees. Select your bees by draging the mouse over, then right click right where you want to move them.
+
+Attack enemies by placing your bees next to the enemies walls. If enemy doesn't come to fight back for the wall, you will conquer it after a while. You also conquer all enemies bees inside the conquered hexagon.
+
+Game finishes when a player conquers all walls in the world. When that happens, server resets.
+
+
+- A blue delimited hexagon is a recent conquered hexagon that can't be attacked or cannot attack other hexagons.
+- A red-violet delimieted wall is a wall uder attack.
+
 
 # How to contribute
 
