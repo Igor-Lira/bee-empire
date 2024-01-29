@@ -14,16 +14,16 @@ A strategy multiplayer game to expand your bee empire by attacking enemies corne
 
 ## How to run this project
 
-Run the server for developemnt: 
+Run the server for developemnt (You need to have Node and NPM installed: 
 ```
 npm install
 ```
 ```
 npm run start
 ```
-Run server using Docker: 
+Run server using Docker (You need to have Docker installed): 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 Then connect to the client (open the `index.html` file in a navigator)
